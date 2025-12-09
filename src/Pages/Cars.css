@@ -1,6 +1,7 @@
 .cars-page {
   position: relative;
   min-height: 80vh;
+  overflow: hidden;
 }
 
 .cars-bg {
@@ -20,7 +21,7 @@
 .cars-content {
   position: relative;
   z-index: 1;
-  padding-top: 70px;
+  padding-top: 20px;
 }
 
 .cars-banner {
