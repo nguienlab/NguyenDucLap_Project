@@ -1,6 +1,21 @@
-.cart-item {
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+.cart-container {
+    margin-top: 2rem;
+    max-height: fit-content;
+    overflow-y: auto;
+    background-image: url('/react-car-shop/images/banner-bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 2px 2px 4px 8px rgba(0,0,0,0.05);
+}
+
+

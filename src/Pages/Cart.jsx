@@ -50,7 +50,7 @@ export default function Cart() {
             ) : (
                 <>
                     {error && <div className="alert alert-danger">{error}</div>}
-                    <div className="cart-items-list">
+                    <div className="cart-items-list m-5">
                         {cartItems.map(item => (
                             <div key={item._id} className="cart-item row align-items-center mb-3">
                                 <div className="col-2 col-md-1">

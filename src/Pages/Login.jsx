@@ -51,7 +51,7 @@ export default function Login() {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary w-100">Login</button>
+                    <button type="submit" style={{ width: "100%", color: "#040000ff", backgroundColor: "#ff9900ff" }} className="btn w-100">Login</button>
                 </form>
                 <p className="mt-3 text-center">
                     Don't have an account? <Link to="/register">Register here</Link>

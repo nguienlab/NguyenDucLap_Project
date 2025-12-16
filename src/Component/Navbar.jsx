@@ -75,6 +75,35 @@ export default function Navbar() {
             <span className="fw-bold text-dark">SPORT-CARS</span>
           </Link>
 
+          {/* Ô tìm kiếm bản desktop - Đã di chuyển */}
+          <div className="d-none d-lg-block ms-3"> {/* Added ms-3 for some margin */}
+            <form
+              className="d-flex"
+              onSubmit={handleSearchSubmit}
+              style={{ alignItems: "center" }}
+            >
+              <input
+                className="form-control form-control-sm me-2 rounded-3"
+                type="search"
+                placeholder="Search..."
+                aria-label="Search"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                style={{
+                  maxWidth: 300,
+                  boxShadow: "0 0 3px rgba(0,0,0,0.1)",
+                }}
+              />
+              <button
+                className="btn btn-sm rounded-3"
+                style={{ backgroundColor: "#ff9900ff", color: "#040000ff" }}
+                type="submit"
+              >
+                <i className="bi bi-search"></i>
+              </button>
+            </form>
+          </div>
+
           {/* Nút toggle */}
           <button
             className="navbar-toggler"
@@ -85,7 +114,7 @@ export default function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="collapse navbar-collapse" id="mainNav">
+          <div className="collapse navbar-collapse me-3" id="mainNav">
             {/* Menu */}
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-lg-center text-end">
               <li className="nav-item ">
@@ -161,23 +190,38 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <li className="nav-item">
-                    <NavLink
-                      to="/login"
-                      className={({ isActive }) => "nav-link nav-icon-link" + (isActive ? " active-link" : "")}
+                  <li className="nav-item dropdown">
+                    <a
+                      className="nav-link dropdown-toggle nav-icon-link"
+                      href="#"
+                      id="authDropdown"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
                       onClick={handleNavLinkClick}
                     >
-                      Login
-                    </NavLink>
-                  </li>
-                   <li className="nav-item">
-                    <NavLink
-                      to="/register"
-                      className={({ isActive }) => "nav-link nav-icon-link" + (isActive ? " active-link" : "")}
-                      onClick={handleNavLinkClick}
-                    >
-                      Register
-                    </NavLink>
+                      Account 
+                    </a>
+                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
+                      <li>
+                        <NavLink
+                          to="/login"
+                          className={({ isActive }) => "dropdown-item" + (isActive ? " active-link" : "")}
+                          onClick={handleNavLinkClick}
+                        >
+                          Login
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/register"
+                          className={({ isActive }) => "dropdown-item" + (isActive ? " active-link" : "")}
+                          onClick={handleNavLinkClick}
+                        >
+                          Register
+                        </NavLink>
+                      </li>
+                    </ul>
                   </li>
                 </>
               )}
@@ -194,35 +238,6 @@ export default function Navbar() {
                   )}
                 </NavLink>
               </li>
-
-              {/* Ô tìm kiếm bản desktop */}
-              <li className="nav-item ms-lg-3 d-none d-lg-block">
-                <form
-                  className="d-flex"
-                  onSubmit={handleSearchSubmit}
-                  style={{ alignItems: "center" }}
-                >
-                  <input
-                    className="form-control form-control-sm me-2 rounded-3"
-                    type="search"
-                    placeholder="Search..."
-                    aria-label="Search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{
-                      maxWidth: 180,
-                      boxShadow: "0 0 3px rgba(0,0,0,0.1)",
-                    }}
-                  />
-                  <button
-                    className="btn btn-sm rounded-3"
-                    style={{ backgroundColor: "#ff9900ff", color: "#040000ff" }}
-                    type="submit"
-                  >
-                    <i className="bi bi-search"></i>
-                  </button>
-                </form>
-              </li>
             </ul>
           </div>
         </div>
@@ -231,13 +246,13 @@ export default function Navbar() {
       <div
         className="top-info-bar d-none d-lg-flex justify-content-around align-items-center py-3">
         <div>
-          <i className="bi bi-geo-alt-fill me-2"></i> Location
+          <i className="bi bi-geo-alt-fill me-2"></i> Location: Hanoi, Vietnam
         </div>
         <div>
-          <i className="bi bi-telephone-fill me-2"></i> (+71) 8522369417
+          <i className="bi bi-telephone-fill me-2"></i> (+84) 0354157057
         </div>
         <div>
-          <i className="bi bi-envelope-fill me-2"></i> demo@gmail.com
+          <i className="bi bi-envelope-fill me-2"></i> CSKH@gmail.com
         </div>
       </div>
 

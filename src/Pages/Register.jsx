@@ -66,7 +66,7 @@ export default function Register() {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary w-100">Register</button>
+                    <button type="submit" style={{ width: "100%", color: "#040000ff", backgroundColor: "#ff9900ff" }} className="btn w-100">Register</button>
                 </form>
                 <p className="mt-3 text-center">
                     Already have an account? <Link to="/login">Login here</Link>
