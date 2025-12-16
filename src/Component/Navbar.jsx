@@ -1,5 +1,7 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 import "./Navbar.css";
 
 
@@ -7,6 +9,9 @@ export default function Navbar() {
   const [searchText, setSearchText] = useState("");
   const navRef = useRef(null);
   const [navHeight, setNavHeight] = useState(0);
+  const { user, logout } = useAuth();
+  const { cartCount } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (navRef.current) {
@@ -28,6 +33,12 @@ export default function Navbar() {
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  
+  const handleLogout = () => {
+    handleNavLinkClick();
+    logout();
+    navigate('/');
+  }
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -87,7 +98,7 @@ export default function Navbar() {
                   onClick={handleNavLinkClick}
                 >
 
-                  Home <i className="bi bi-house-fill m-1"></i>
+                  Home 
 
                 </NavLink>
               </li>
@@ -100,7 +111,7 @@ export default function Navbar() {
                   onClick={handleNavLinkClick}
                 >
 
-                  Cars <i className="bi bi-car-front m-1"></i>
+                  Cars 
 
                 </NavLink>
               </li>
@@ -113,7 +124,7 @@ export default function Navbar() {
                   onClick={handleNavLinkClick}
                 >
 
-                  About <i className="bi bi-journal-text m-1"></i>
+                  About 
 
                 </NavLink>
               </li>
@@ -126,8 +137,61 @@ export default function Navbar() {
                   onClick={handleNavLinkClick}
                 >
 
-                  Contact <i className="bi bi-envelope m-1"></i>
+                  Contact 
+                </NavLink>
+              </li>
 
+              {/* Auth Links */}
+              {user ? (
+                <>
+                  <li className="nav-item">
+                     <NavLink
+                        to="/dashboard"
+                        className={({ isActive }) => "nav-link nav-icon-link" + (isActive ? " active-link" : "")}
+                        onClick={handleNavLinkClick}
+                      >
+                        Dashboard <i className="bi bi-grid-fill m-1"></i>
+                      </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <button className="btn btn-link nav-link nav-icon-link" onClick={handleLogout}>
+                      Logout <i className="bi bi-box-arrow-right m-1"></i>
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <NavLink
+                      to="/login"
+                      className={({ isActive }) => "nav-link nav-icon-link" + (isActive ? " active-link" : "")}
+                      onClick={handleNavLinkClick}
+                    >
+                      Login
+                    </NavLink>
+                  </li>
+                   <li className="nav-item">
+                    <NavLink
+                      to="/register"
+                      className={({ isActive }) => "nav-link nav-icon-link" + (isActive ? " active-link" : "")}
+                      onClick={handleNavLinkClick}
+                    >
+                      Register
+                    </NavLink>
+                  </li>
+                </>
+              )}
+
+              {/* Cart Icon */}
+               <li className="nav-item">
+                <NavLink to="/cart" className="nav-link nav-icon-link position-relative" onClick={handleNavLinkClick}>
+                  <i className="bi bi-cart-fill"></i>
+                  {cartCount > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {cartCount}
+                      <span className="visually-hidden">items in cart</span>
+                    </span>
+                  )}
                 </NavLink>
               </li>
 

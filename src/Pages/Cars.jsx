@@ -1,50 +1,54 @@
-import { useMemo, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
 import CarCard from "../Component/CarCard";
-import "./Cars.css"; // 👉 import CSS riêng
+import "./Cars.css";
 import CarouselHero from "../Component/Carousel";
 
-const ALL_CARS = [
-  { id: 1, name: "Chevrolet Camaro", price: 26100, type: "sport", image: "/react-car-shop/images/chevroletcamaro.png", desc: "Sport 2 cửa, turbo." },
-  { id: 2, name: "Mazda MX-5 Miata 2023", price: 28050, type: "sport", image: "/react-car-shop/images/MazdaMX-5Miata2023.png", desc: "Cơ bắp Mỹ." },
-  { id: 3, name: "Toyota GR 86", price: 28400, type: "suv", image: "/react-car-shop/images/ToyotaGR86.png", desc: "SUV siêu sang, siêu mạnh." },
-  { id: 4, name: "Subaru BRZ", price: 28595, type: "suv", image: "/react-car-shop/images/SubaruBRZ.png", desc: "SUV cao cấp." },
-  { id: 5, name: "Dodge Challenger", price: 31100, type: "sedan", image: "/react-car-shop/images/DodgeChallenger.png", desc: "Sedan hạng sang." },
-  { id: 6, name: "BMW 230i Coupe", price: 38200, type: "sedan", image: "/react-car-shop/images/BMW230iCoupe.png", desc: "Sedan bền bỉ, tiết kiệm." },
-  { id: 7, name: "Nissan Z", price: 40990, type: "suv", image: "/react-car-shop/images/NissanZ.png", desc: "SUV siêu sang, siêu mạnh." },
-  { id: 8, name: "Toyota GR Supra", price: 44040, type: "suv", image: "/react-car-shop/images/ToyotaGRSupra.png", desc: "SUV cao cấp." },
-  { id: 9, name: "Audi TT Coupe", price: 52000, type: "sedan", image: "/react-car-shop/images/AudiTTCoupe.png", desc: "Sedan hạng sang." },
-  { id: 10, name: "BMW Z4", price: 52800, type: "sedan", image: "/react-car-shop/images/BMWZ4.png", desc: "Sedan bền bỉ, tiết kiệm." },
-  { id: 11, name: "Audi TT Coupe", price: 52000, type: "sedan", image: "/react-car-shop/images/AudiTTCoupe.png", desc: "Sedan hạng sang." },
-  { id: 12, name: "BMW Z4", price: 52800, type: "sedan", image: "/react-car-shop/images/BMWZ4.png", desc: "Sedan bền bỉ, tiết kiệm." },
-];
-
 export default function Cars() {
+  const [allCars, setAllCars] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const [q, setQ] = useState("");
   const [type, setType] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
+  
+  const { api } = useAuth();
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get('/vehicles');
+        setAllCars(res.data.data);
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch cars. Please try again later.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVehicles();
+  }, [api]);
 
   const filtered = useMemo(() => {
-    return ALL_CARS.filter(c => {
+    return allCars.filter(c => {
       const matchName = c.name.toLowerCase().includes(q.toLowerCase());
       const matchType = type === "all" ? true : c.type === type;
       const matchPrice = maxPrice ? c.price <= Number(maxPrice) : true;
       return matchName && matchType && matchPrice;
     });
-  }, [q, type, maxPrice]);
+  }, [q, type, maxPrice, allCars]);
 
   const handleBuy = (car) => alert(`Bạn đã chọn mua: ${car.name}`);
 
   return (
     <div className="cars-page">
-      {/* Ảnh nền cho phần Cars */}
       <div className="cars-bg" />
-
-      {/* Nội dung chính */}
       <div className="container px-2 px-md-5 cars-content">
-        {/* Hero */}
         <CarouselHero />
-
         <motion.h2
           className="cars-title"
           initial={{ opacity: 0, y: -30 }}
@@ -54,7 +58,6 @@ export default function Cars() {
           All Cars
         </motion.h2>
 
-        {/* Filter bar */}
         <motion.div
           className="row g-3 mb-3"
           initial={{ opacity: 0 }}
@@ -76,29 +79,31 @@ export default function Cars() {
               className="form-select"
             >
               <option value="all">All types</option>
-              <option value="sport">Sport</option>
-              <option value="suv">SUV</option>
-              <option value="sedan">Sedan</option>
+              <option value="ô tô">Ô tô</option>
+              <option value="xe máy">Xe máy</option>
             </select>
           </div>
           <div className="col-6 col-md-4">
             <input
               type="number"
               min="0"
+              step="10000000"
               value={maxPrice}
               onChange={e => setMaxPrice(e.target.value)}
               className="form-control"
-              placeholder="Max price (USD)"
+              placeholder="Max price (VND)"
             />
           </div>
         </motion.div>
 
-        {/* Grid */}
+        {loading && <p className="text-center w-100">Loading cars...</p>}
+        {error && <p className="text-danger text-center w-100">{error}</p>}
+
         <div className="row g-4">
           <AnimatePresence>
-            {filtered.map((c, i) => (
+            {!loading && !error && filtered.map((c, i) => (
               <motion.div
-                key={c.id}
+                key={c._id}
                 className="col-12 col-sm-6 col-lg-4"
                 initial={{ opacity: 0, scale: 0.9, y: 30 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -111,7 +116,7 @@ export default function Cars() {
             ))}
           </AnimatePresence>
 
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <motion.p
               className="text-muted text-center w-100"
               initial={{ opacity: 0 }}

@@ -1,15 +1,38 @@
-import { p } from "framer-motion/client";
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
-export default function CarCard({ car, onBuy }) {
+export default function CarCard({ car }) {
+  const { addToCart } = useCart();
+  const { user } = useAuth();
+  
+  // Format price to VND
+  const formattedPrice = new Intl.NumberFormat('vi-VN', { 
+    style: 'currency', 
+    currency: 'VND' 
+  }).format(car.price);
+
+  const handleAddToCart = () => {
+    addToCart(car, 1);
+    alert(`${car.name} has been added to your cart.`);
+  };
+
   return (
     <div className="card h-100 shadow-sm">
       <img src={car.image} className="card-img-top" alt={car.name} style={{ height: 180, objectFit: "cover" }} />
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">{car.name}</h5>
-        <p className="card-text text-muted small flex-grow-1">{car.desc}</p>
+        <p className="card-text text-muted small flex-grow-1">{car.description}</p>
         <div className="d-flex justify-content-between align-items-center">
-          <span className="fw-bold text-primary">${car.price.toLocaleString()}</span>
-          <button className="btn btn-sm btn-primary" onClick={() => onBuy?.(car)}>Buy Now</button>
+          <span className="fw-bold text-primary">{formattedPrice}</span>
+          {user?.role === 'customer' && (
+             <button 
+                className="btn btn-sm btn-primary" 
+                onClick={handleAddToCart}
+                disabled={car.quantity === 0}
+              >
+                {car.quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
+              </button>
+          )}
         </div>
       </div>
     </div>

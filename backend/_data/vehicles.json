@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Toyota GR Supra",
+    "brand": "Toyota",
+    "type": "ô tô",
+    "price": 2350000000,
+    "year": 2023,
+    "description": "The legend returns. A pure driving machine, the GR Supra is a masterpiece of design and engineering.",
+    "image": "/images/ToyotaGRSupra.png",
+    "quantity": 10
+  },
+  {
+    "name": "BMW Z4",
+    "brand": "BMW",
+    "type": "ô tô",
+    "price": 3409000000,
+    "year": 2023,
+    "description": "Open-top driving pleasure. The BMW Z4 combines classic roadster aesthetics with modern dynamics.",
+    "image": "/images/BMWZ4.png",
+    "quantity": 8
+  },
+  {
+    "name": "Audi TT Coupe",
+    "brand": "Audi",
+    "type": "ô tô",
+    "price": 2300000000,
+    "year": 2022,
+    "description": "A design icon. The Audi TT Coupe stands for style, sportiness, and innovative technology.",
+    "image": "/images/AudiTTCoupe.png",
+    "quantity": 12
+  },
+  {
+    "name": "Nissan Z",
+    "brand": "Nissan",
+    "type": "ô tô",
+    "price": 2000000000,
+    "year": 2023,
+    "description": "50 years of thrill. The all-new Nissan Z is a sports car that's pure excitement.",
+    "image": "/images/NissanZ.png",
+    "quantity": 5
+  },
+  {
+    "name": "Subaru BRZ",
+    "brand": "Subaru",
+    "type": "ô tô",
+    "price": 1800000000,
+    "year": 2023,
+    "description": "Rear-wheel-drive fun. The Subaru BRZ is engineered for an exhilarating and affordable sports car experience.",
+    "image": "/images/SubaruBRZ.png",
+    "quantity": 15
+  },
+  {
+    "name": "Honda CBR1000RR-R",
+    "brand": "Honda",
+    "type": "xe máy",
+    "price": 950000000,
+    "year": 2024,
+    "description": "Born to race. The Fireblade SP is a track-focused superbike with MotoGP technology.",
+    "image": "/images/placeholder.png",
+    "quantity": 7
+  },
+  {
+    "name": "Yamaha YZF-R1M",
+    "brand": "Yamaha",
+    "type": "xe máy",
+    "price": 1100000000,
+    "year": 2024,
+    "description": "R for Racing. The YZF-R1M is a special edition superbike with premium Ohlins suspension and carbon fiber bodywork.",
+    "image": "/images/placeholder.png",
+    "quantity": 4
+  }
+]

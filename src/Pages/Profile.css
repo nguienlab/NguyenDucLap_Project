@@ -1,0 +1,22 @@
+.profile-container {
+    display: flex;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: #f8f9fa;
+    min-height: 80vh;
+}
+
+.profile-card {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    align-self: flex-start;
+}
+
+.profile-card h2 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
