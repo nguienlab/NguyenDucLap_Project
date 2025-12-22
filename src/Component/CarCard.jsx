@@ -1,11 +1,13 @@
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useProductDetail } from '../context/ProductDetailContext';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
 export default function CarCard({ car }) {
   const { addToCart } = useCart();
   const { user } = useAuth();
+  const { openPanel } = useProductDetail();
   
   // Construct the full image URL
   const imageUrl = `${apiBaseUrl}${car.image}`;
@@ -16,13 +18,14 @@ export default function CarCard({ car }) {
     currency: 'VND' 
   }).format(car.price);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
+    e.stopPropagation(); // Prevent the panel from opening when adding to cart
     addToCart(car, 1);
     alert(`${car.name} has been added to your cart.`);
   };
 
   return (
-    <div className="card h-100 shadow-sm">
+    <div className="card h-100 shadow-sm" onClick={() => openPanel(car)} style={{ cursor: 'pointer' }}>
       <img src={imageUrl} className="card-img-top" alt={car.name} style={{ height: 180, objectFit: "cover" }} />
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">{car.name}</h5>

@@ -20,54 +20,61 @@ import MyOrders from "./Pages/Dashboard/MyOrders";
 import ManageVehicles from "./Pages/Dashboard/ManageVehicles";
 import ManageUsers from "./Pages/Dashboard/ManageUsers";
 import ManageOrders from "./Pages/Dashboard/ManageOrders";
+import Checkout from "./Pages/Checkout";
+import ProductDetailPanel from "./Component/ProductDetailPanel";
+import { useProductDetail } from "./context/ProductDetailContext";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 
 export default function App() {
   const location = useLocation();
+  const { isPanelOpen } = useProductDetail();
   const isDashboardPage = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
 
   return (
     <>
-      <Navbar />
-      <main 
-        style={{ 
-          minHeight: "80vh",
-          // Remove background color if dashboard has its own
-        }}>
+      <div className={`app-container ${isPanelOpen ? 'app-container-shifted' : ''}`}>
+        <Navbar />
+        <main 
+          style={{ 
+            minHeight: "80vh",
+          }}>
           
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/cars" element={<Cars />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/cart" element={<Cart />} />
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/cars" element={<Cars />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/cart" element={<Cart />} />
 
-          {/* Protected Routes (User-specific) */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/profile" element={<Profile />} /> {/* User's Profile/Dashboard */}
-            <Route path="/profile/my-orders" element={<MyOrders />} /> {/* User's Orders */}
-          </Route>
-
-          {/* Protected Dashboard Routes (Admin Only) */}
-          <Route path="/dashboard" element={<AdminRoute />}> {/* AdminRoute here */}
-            <Route element={<DashboardLayout />}>
-              <Route index element={<UserDashboard />} /> {/* Admin Dashboard Home */}
-              
-              {/* Admin Management Routes */}
-              <Route path="manage-vehicles" element={<ManageVehicles />} />
-              <Route path="manage-users" element={<ManageUsers />} />
-              <Route path="manage-orders" element={<ManageOrders />} />
+            {/* Protected Routes (User-specific) */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Profile />} /> {/* User's Profile/Dashboard */}
+              <Route path="/profile/my-orders" element={<MyOrders />} /> {/* User's Orders */}
+              <Route path="/checkout" element={<Checkout />} />
             </Route>
-          </Route>
 
-        </Routes>
-      </main>
-      {!isDashboardPage && <Footer />}
+            {/* Protected Dashboard Routes (Admin Only) */}
+            <Route path="/dashboard" element={<AdminRoute />}> {/* AdminRoute here */}
+              <Route element={<DashboardLayout />}>
+                <Route index element={<UserDashboard />} /> {/* Admin Dashboard Home */}
+                
+                {/* Admin Management Routes */}
+                <Route path="manage-vehicles" element={<ManageVehicles />} />
+                <Route path="manage-users" element={<ManageUsers />} />
+                <Route path="manage-orders" element={<ManageOrders />} />
+              </Route>
+            </Route>
+
+          </Routes>
+        </main>
+        {!isDashboardPage && <Footer />}
+      </div>
+      <ProductDetailPanel />
     </>
   );
 }

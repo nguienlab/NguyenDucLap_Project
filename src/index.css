@@ -21,3 +21,19 @@ main.container {
 .navbar .collapsing {
   transition: height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* App container for detail panel */
+.app-container {
+  transition: padding-right 0.4s ease-in-out;
+}
+
+.app-container-shifted {
+  padding-right: 450px;
+}
+
+/* On smaller screens, don't shift the content, as the panel will be full-width */
+@media (max-width: 768px) {
+  .app-container-shifted {
+    padding-right: 0;
+  }
+}

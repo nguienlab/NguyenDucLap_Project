@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";  // 👈 dùng BrowserRouter
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
+import { ProductDetailProvider } from "./context/ProductDetailContext.jsx";
 
 import 'bootstrap/dist/css/bootstrap.min.css'; // nếu dùng bootstrap
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -19,7 +20,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter basename="/react-car-shop/">
       <AuthProvider>
         <CartProvider>
-          <App />
+          <ProductDetailProvider>
+            <App />
+          </ProductDetailProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

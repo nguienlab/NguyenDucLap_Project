@@ -25,6 +25,12 @@ const OrderSchema = new mongoose.Schema({
       },
     },
   ],
+  shippingInfo: {
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    phoneNo: { type: String, required: true },
+    postalCode: { type: String, required: true },
+  },
   totalPrice: {
     type: Number,
     required: true,

@@ -5,19 +5,20 @@ const Vehicle = require('../models/Vehicle');
 // @route   POST /api/orders
 // @access  Private (User or Admin)
 exports.createOrder = async (req, res, next) => {
-  // The request body should be an array of objects: { vehicle: "vehicleId", quantity: 1 }
-  const { items } = req.body;
+  const { items, shippingInfo } = req.body;
 
   if (!items || items.length === 0) {
     return res.status(400).json({ success: false, message: 'No order items provided' });
+  }
+
+  if (!shippingInfo || !shippingInfo.address || !shippingInfo.city || !shippingInfo.phoneNo || !shippingInfo.postalCode) {
+    return res.status(400).json({ success: false, message: 'Please provide shipping information' });
   }
 
   try {
     let calculatedTotalPrice = 0;
     const orderItems = [];
 
-    // Note: Without a transaction, these operations are not atomic.
-    // This is a tradeoff for compatibility with standalone MongoDB instances.
     for (const item of items) {
         const vehicle = await Vehicle.findById(item.vehicle);
         if (!vehicle) {
@@ -27,17 +28,15 @@ exports.createOrder = async (req, res, next) => {
             return res.status(400).json({ success: false, message: `Not enough stock for ${vehicle.name}. Only ${vehicle.quantity} left.` });
         }
         
-        // Add to order items and calculate price
         orderItems.push({
             vehicle: vehicle._id,
-            name: vehicle.name, // Store name and image for easier display
+            name: vehicle.name,
             image: vehicle.image,
             quantity: item.quantity,
-            price: vehicle.price // Price at time of purchase
+            price: vehicle.price
         });
         calculatedTotalPrice += vehicle.price * item.quantity;
 
-        // Decrease stock
         vehicle.quantity -= item.quantity;
         await vehicle.save();
     }
@@ -45,6 +44,7 @@ exports.createOrder = async (req, res, next) => {
     const order = await Order.create({
       user: req.user.id,
       orderItems,
+      shippingInfo,
       totalPrice: calculatedTotalPrice,
     });
 
