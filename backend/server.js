@@ -17,6 +17,9 @@ app.use(express.json());
 // Enable CORS
 app.use(cors());
 
+// Set static folder
+app.use(express.static('public'));
+
 // Home route for testing
 app.get('/', (req, res) => {
   res.send('API is running...');

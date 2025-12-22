@@ -89,36 +89,30 @@ const ManageVehicles = () => {
                 <Button variant="primary" onClick={handleShowCreateModal}>Create New Vehicle</Button>
             </div>
             
-            <div className="table-responsive">
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Brand</th>
-                            <th>Type</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {vehicles.map(v => (
-                            <tr key={v._id}>
-                                <td><img src={v.image} alt={v.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }} /></td>
-                                <td>{v.name}</td>
-                                <td>{v.brand}</td>
-                                <td>{v.type}</td>
-                                <td>{new Intl.NumberFormat('vi-VN').format(v.price)} VND</td>
-                                <td>{v.quantity}</td>
-                                <td>
+            <div className="row g-4">
+                {vehicles.map(v => (
+                    <div key={v._id} className="col-12 col-sm-6 col-lg-3">
+                        <div className="card h-100 shadow-sm">
+                             <img 
+                                src={`${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${v.image}`} 
+                                className="card-img-top" 
+                                alt={v.name} 
+                                style={{ height: '180px', objectFit: 'cover' }} 
+                            />
+                            <div className="card-body d-flex flex-column">
+                                <h5 className="card-title">{v.name}</h5>
+                                <p className="card-text mb-1"><strong>Brand:</strong> {v.brand}</p>
+                                <p className="card-text mb-1"><strong>Type:</strong> {v.type}</p>
+                                <p className="card-text mb-1"><strong>Price:</strong> {new Intl.NumberFormat('vi-VN').format(v.price)} VND</p>
+                                <p className="card-text"><strong>Stock:</strong> {v.quantity}</p>
+                                <div className="mt-auto d-flex justify-content-end">
                                     <Button variant="secondary" size="sm" className="me-2" onClick={() => handleShowEditModal(v)}>Edit</Button>
                                     <Button variant="danger" size="sm" onClick={() => handleDelete(v._id)}>Delete</Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Create/Edit Modal */}

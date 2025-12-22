@@ -1,9 +1,14 @@
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
+
 export default function CarCard({ car }) {
   const { addToCart } = useCart();
   const { user } = useAuth();
+  
+  // Construct the full image URL
+  const imageUrl = `${apiBaseUrl}${car.image}`;
   
   // Format price to VND
   const formattedPrice = new Intl.NumberFormat('vi-VN', { 
@@ -18,7 +23,7 @@ export default function CarCard({ car }) {
 
   return (
     <div className="card h-100 shadow-sm">
-      <img src={car.image} className="card-img-top" alt={car.name} style={{ height: 180, objectFit: "cover" }} />
+      <img src={imageUrl} className="card-img-top" alt={car.name} style={{ height: 180, objectFit: "cover" }} />
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">{car.name}</h5>
         <p className="card-text text-muted small flex-grow-1">{car.description}</p>

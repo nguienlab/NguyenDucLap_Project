@@ -2,108 +2,31 @@ import { motion } from "framer-motion";
 import CarouselHero from "../Component/Carousel";
 import CarCard from "../Component/CarCard";
 import "./Home.css";
-
-const featured = [
-  {
-    id: 1,
-    name: "Chevrolet Camaro",
-    price: 26100,
-    type: "sport",
-    image: "/react-car-shop/images/chevroletcamaro.png",
-    desc: "Sport 2 cửa, turbo.",
-  },
-  {
-    id: 2,
-    name: "Mazda MX-5 Miata 2023",
-    price: 28050,
-    type: "sport",
-    image: "/react-car-shop/images/MazdaMX-5Miata2023.png",
-    desc: "Cơ bắp Mỹ.",
-  },
-  {
-    id: 3,
-    name: "Toyota GR 86",
-    price: 28488,
-    type: "suv",
-    image: "/react-car-shop/images/ToyotaGR86.png",
-    desc: "SUV siêu sang, siêu mạnh.",
-  },
-  {
-    id: 4,
-    name: "Subaru BRZ",
-    price: 28595,
-    type: "suv",
-    image: "/react-car-shop/images/SubaruBRZ.png",
-    desc: "SUV cao cấp.",
-  },
-  {
-    id: 5,
-    name: "Dodge Challenger",
-    price: 31100,
-    type: "sedan",
-    image: "/react-car-shop/images/DodgeChallenger.png",
-    desc: "Sedan hạng sang.",
-  },
-  {
-    id: 6,
-    name: "BMW 230i Coupe",
-    price: 38200,
-    type: "sedan",
-    image: "/react-car-shop/images/BMW230iCoupe.png",
-    desc: "Sedan bền bỉ, tiết kiệm.",
-  },
-  {
-    id: 7,
-    name: "Nissan Z",
-    price: 40990,
-    type: "suv",
-    image: "/react-car-shop/images/NissanZ.png",
-    desc: "SUV siêu sang, siêu mạnh.",
-  },
-  {
-    id: 8,
-    name: "Toyota GR Supra",
-    price: 44040,
-    type: "suv",
-    image: "/react-car-shop/images/ToyotaGRSupra.png",
-    desc: "SUV cao cấp.",
-  },
-  {
-    id: 9,
-    name: "Audi TT Coupe",
-    price: 52000,
-    type: "sedan",
-    image: "/react-car-shop/images/AudiTTCoupe.png",
-    desc: "Sedan hạng sang.",
-  },
-  {
-    id: 10,
-    name: "BMW Z4",
-    price: 52800,
-    type: "sedan",
-    image: "/react-car-shop/images/BMWZ4.png",
-    desc: "Sedan bền bỉ, tiết kiệm.",
-  },
-    {
-    id: 11,
-    name: "Audi TT Coupe",
-    price: 52000,
-    type: "sedan",
-    image: "/react-car-shop/images/AudiTTCoupe.png",
-    desc: "Sedan hạng sang.",
-  },
-  {
-    id: 12,
-    name: "BMW Z4",
-    price: 52800,
-    type: "sedan",
-    image: "/react-car-shop/images/BMWZ4.png",
-    desc: "Sedan bền bỉ, tiết kiệm.",
-  },
-];
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const handleBuy = (car) => alert(`Bạn đã chọn mua: ${car.name}`);
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/vehicles?limit=12`);
+        if (!res.ok) {
+          throw new Error('Failed to fetch vehicles');
+        }
+        const data = await res.json();
+        setVehicles(data.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, []);
 
   return (
     <div className="home-wrapper">
@@ -123,18 +46,24 @@ export default function Home() {
           </motion.h2>
 
           <div className="row g-4">
-            {featured.map((c, index) => (
-              <motion.div
-                key={c.id}
-                className="col-12 col-sm-6 col-lg-4"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.3, duration: 0.6 }}
-                whileHover={{ scale: 1.05, rotate: 1 }}
-              >
-                <CarCard car={c} onBuy={handleBuy} />
-              </motion.div>
-            ))}
+            {loading ? (
+              <p>Loading...</p>
+            ) : error ? (
+              <p>{error}</p>
+            ) : (
+              vehicles.map((c, index) => (
+                <motion.div
+                  key={c._id}
+                  className="col-12 col-sm-6 col-lg-4"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <CarCard car={c} />
+                </motion.div>
+              ))
+            )}
           </div>
         </section>
 

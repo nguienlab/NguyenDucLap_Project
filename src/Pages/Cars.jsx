@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "../context/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
 import CarCard from "../Component/CarCard";
 import "./Cars.css";
 import CarouselHero from "../Component/Carousel";
@@ -10,18 +10,35 @@ export default function Cars() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  const [q, setQ] = useState("");
   const [type, setType] = useState("all");
+  const [brand, setBrand] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
   
-  const { api } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const keyword = searchParams.get("keyword") || "";
 
+  // Local search query state
+  const [q, setQ] = useState(keyword);
+  
   useEffect(() => {
+    // Sync local search input with URL keyword
+    setQ(keyword);
+
     const fetchVehicles = async () => {
       try {
         setLoading(true);
-        const res = await api.get('/vehicles');
-        setAllCars(res.data.data);
+        const apiUrl = keyword ? `/vehicles?keyword=${keyword}` : '/vehicles';
+        
+        // Temporarily using fetch instead of api from useAuth if it's not configured for this
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}${apiUrl}`);
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await res.json();
+        
+        setAllCars(data.data);
         setError(null);
       } catch (err) {
         setError("Failed to fetch cars. Please try again later.");
@@ -31,18 +48,28 @@ export default function Cars() {
       }
     };
     fetchVehicles();
-  }, [api]);
+  }, [keyword]); // Refetch when keyword changes
 
+  // Get unique brands for the filter dropdown from the fetched cars
+  const brands = useMemo(() => {
+    const uniqueBrands = [...new Set(allCars.map(c => c.brand))];
+    return uniqueBrands.sort();
+  }, [allCars]);
+
+  // Client-side filtering on the fetched results
   const filtered = useMemo(() => {
     return allCars.filter(c => {
-      const matchName = c.name.toLowerCase().includes(q.toLowerCase());
       const matchType = type === "all" ? true : c.type === type;
+      const matchBrand = brand === "all" ? true : c.brand === brand;
       const matchPrice = maxPrice ? c.price <= Number(maxPrice) : true;
-      return matchName && matchType && matchPrice;
+      return matchType && matchBrand && matchPrice;
     });
-  }, [q, type, maxPrice, allCars]);
+  }, [type, brand, maxPrice, allCars]);
 
-  const handleBuy = (car) => alert(`Bạn đã chọn mua: ${car.name}`);
+  const handleLocalSearchSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/cars?keyword=${q.trim()}`);
+  }
 
   return (
     <div className="cars-page">
@@ -55,16 +82,17 @@ export default function Cars() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          All Cars
+          {keyword ? `Results for "${keyword}"` : "All Cars"}
         </motion.h2>
 
-        <motion.div
+        <motion.form
           className="row g-3 mb-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.4 }}
+          onSubmit={handleLocalSearchSubmit}
         >
-          <div className="col-12 col-md-4">
+          <div className="col-12 col-md-3">
             <input
               value={q}
               onChange={e => setQ(e.target.value)}
@@ -72,7 +100,7 @@ export default function Cars() {
               placeholder="Search by name..."
             />
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6 col-md-2">
             <select
               value={type}
               onChange={e => setType(e.target.value)}
@@ -83,7 +111,17 @@ export default function Cars() {
               <option value="xe máy">Xe máy</option>
             </select>
           </div>
-          <div className="col-6 col-md-4">
+          <div className="col-6 col-md-2">
+            <select
+              value={brand}
+              onChange={e => setBrand(e.target.value)}
+              className="form-select"
+            >
+              <option value="all">All brands</option>
+              {brands.map(b => <option key={b} value={b}>{b}</option>)}
+            </select>
+          </div>
+          <div className="col-12 col-md-3">
             <input
               type="number"
               min="0"
@@ -94,7 +132,10 @@ export default function Cars() {
               placeholder="Max price (VND)"
             />
           </div>
-        </motion.div>
+           <div className="col-12 col-md-2">
+            <button type="submit" className="btn btn-primary w-100">Filter</button>
+           </div>
+        </motion.form>
 
         {loading && <p className="text-center w-100">Loading cars...</p>}
         {error && <p className="text-danger text-center w-100">{error}</p>}
@@ -111,7 +152,7 @@ export default function Cars() {
                 transition={{ duration: 0.4, delay: i * 0.1 }}
                 whileHover={{ scale: 1.05 }}
               >
-                <CarCard car={c} onBuy={handleBuy} />
+                <CarCard car={c} />
               </motion.div>
             ))}
           </AnimatePresence>

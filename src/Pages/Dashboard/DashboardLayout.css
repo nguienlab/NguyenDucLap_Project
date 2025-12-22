@@ -1,7 +1,7 @@
 .dashboard-container {
     display: flex;
-    min-height: calc(100vh - 160px); /* Adjust based on Navbar/Footer height */
-      background-image: url('/react-car-shop/images/banner-bg.png');
+    min-height: 100vh;
+    background-image: url('/react-car-shop/images/banner-bg.png');
 }
 
 .dashboard-sidebar {
@@ -10,6 +10,10 @@
     color: #fff;
     padding: 1.5rem 1rem;
     flex-shrink: 0;
+    position: sticky; /* Make the sidebar sticky */
+    top: 0;          /* Stick it to the top */
+    height: 100vh;   /* Occupy full viewport height */
+    overflow-y: auto; /* Allow scrolling within the sidebar if content overflows */
 }
 
 .sidebar-title {

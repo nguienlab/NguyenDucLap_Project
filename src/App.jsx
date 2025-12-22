@@ -1,5 +1,4 @@
-// App.jsx
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 // Components & Pages
 import Navbar from "./Component/Navbar";
@@ -26,6 +25,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 
 export default function App() {
+  const location = useLocation();
+  const isDashboardPage = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
+
   return (
     <>
       <Navbar />
@@ -65,7 +67,7 @@ export default function App() {
 
         </Routes>
       </main>
-      <Footer />
+      {!isDashboardPage && <Footer />}
     </>
   );
 }

@@ -5,7 +5,23 @@ const Vehicle = require('../models/Vehicle');
 // @access  Public
 exports.getVehicles = async (req, res, next) => {
   try {
-    const vehicles = await Vehicle.find();
+    const keyword = req.query.keyword
+      ? {
+          $or: [
+            { name: { $regex: req.query.keyword, $options: 'i' } },
+            { brand: { $regex: req.query.keyword, $options: 'i' } },
+          ],
+        }
+      : {};
+
+    let query = Vehicle.find({ ...keyword });
+
+    if (req.query.limit) {
+      query = query.limit(parseInt(req.query.limit));
+    }
+
+    const vehicles = await query;
+
     res.status(200).json({ success: true, count: vehicles.length, data: vehicles });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });

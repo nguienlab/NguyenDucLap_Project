@@ -1,4 +1,4 @@
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -12,6 +12,9 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const { cartCount } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isDashboardPage = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
+
 
   useEffect(() => {
     if (navRef.current) {
@@ -42,7 +45,10 @@ export default function Navbar() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    alert(`Bạn tìm: ${searchText}`);
+    if (searchText.trim()) {
+      navigate(`/cars?keyword=${searchText.trim()}`);
+      setSearchText("");
+    }
   };
 
   return (
@@ -242,19 +248,21 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
-      {/* Thanh thông tin dưới navbar (ẩn trên mobile) */}
-      <div
-        className="top-info-bar d-none d-lg-flex justify-content-around align-items-center py-3">
-        <div>
-          <i className="bi bi-geo-alt-fill me-2"></i> Location: Hanoi, Vietnam
+      
+      {!isDashboardPage && (
+        <div
+          className="top-info-bar d-none d-lg-flex justify-content-around align-items-center py-3">
+          <div>
+            <i className="bi bi-geo-alt-fill me-2"></i> Location: Hanoi, Vietnam
+          </div>
+          <div>
+            <i className="bi bi-telephone-fill me-2"></i> (+84) 0354157057
+          </div>
+          <div>
+            <i className="bi bi-envelope-fill me-2"></i> CSKH@gmail.com
+          </div>
         </div>
-        <div>
-          <i className="bi bi-telephone-fill me-2"></i> (+84) 0354157057
-        </div>
-        <div>
-          <i className="bi bi-envelope-fill me-2"></i> CSKH@gmail.com
-        </div>
-      </div>
+      )}
 
 
       {/* Ô tìm kiếm bản mobile (nằm dưới navbar) */}
