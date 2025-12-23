@@ -69,19 +69,19 @@ export default function Footer() {
               <div className="location_text">
                 <a>
                   <i className="fa fa-map-marker" aria-hidden="true"></i>
-                  <span className="padding_left_15">Location</span>
+                  <span className="padding_left_15"> Location: Hanoi, Vietnam</span>
                 </a>
               </div>
               <div className="location_text">
                 <a>
                   <i className="fa fa-phone" aria-hidden="true"></i>
-                  <span className="padding_left_15">(+71) 8522369417</span>
+                  <span className="padding_left_15"> (+84) 0354157057</span>
                 </a>
               </div>
               <div className="location_text">
                 <a>
                   <i className="fa fa-envelope" aria-hidden="true"></i>
-                  <span className="padding_left_15">demo@gmail.com</span>
+                  <span className="padding_left_15"> CSKH@gmail.com</span>
                 </a>
               </div>
 
@@ -89,22 +89,22 @@ export default function Footer() {
               <div className="social_icon">
                 <ul>
                   <li>
-                    <motion.a whileHover={linkHover} href="#">
+                    <motion.a whileHover={linkHover} href="https://www.facebook.com/">
                       <i className="fab fa-facebook" aria-hidden="true"></i>
                     </motion.a>
                   </li>
                   <li>
-                    <motion.a whileHover={linkHover} href="#">
+                    <motion.a whileHover={linkHover} href="https://twitter.com/">
                       <i className="fab fa-twitter" aria-hidden="true"></i>
                     </motion.a>
                   </li>
                   <li>
-                    <motion.a whileHover={linkHover} href="#">
+                    <motion.a whileHover={linkHover} href="https://www.linkedin.com/">
                       <i className="fab fa-linkedin" aria-hidden="true"></i>
                     </motion.a>
                   </li>
                   <li>
-                    <motion.a whileHover={linkHover} href="#">
+                    <motion.a whileHover={linkHover} href="https://www.instagram.com/">
                       <i className="fab fa-instagram" aria-hidden="true"></i>
                     </motion.a>
                   </li>
