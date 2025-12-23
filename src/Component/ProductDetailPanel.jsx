@@ -27,14 +27,7 @@ const ProductDetailPanel = () => {
     return (
         <AnimatePresence>
             {isPanelOpen && (
-                <>
-                    <motion.div 
-                        className="panel-backdrop"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={closePanel}
-                    />
+
                     <motion.div
                         className="product-detail-panel"
                         variants={panelVariants}
@@ -61,7 +54,7 @@ const ProductDetailPanel = () => {
                             </button>
                         </div>
                     </motion.div>
-                </>
+
             )}
         </AnimatePresence>
     );
