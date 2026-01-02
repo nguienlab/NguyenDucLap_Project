@@ -30,12 +30,14 @@ const authRoutes = require('./routes/auth.route');
 const vehicleRoutes = require('./routes/vehicle.route');
 const userRoutes = require('./routes/user.route');
 const orderRoutes = require('./routes/order.route');
+const feedbackRoutes = require('./routes/feedback.route');
 
 // Mount routers
 app.use('/api/auth', authRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 const PORT = process.env.PORT || 5000;
 
