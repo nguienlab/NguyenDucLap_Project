@@ -12,6 +12,7 @@ const ManageVehicles = () => {
     const [showModal, setShowModal] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [currentVehicle, setCurrentVehicle] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     
     const fetchVehicles = async () => {
         try {
@@ -34,17 +35,20 @@ const ManageVehicles = () => {
         setShowModal(false);
         setCurrentVehicle(null);
         setIsEditing(false);
+        setImageFile(null);
     };
 
     const handleShowCreateModal = () => {
         setIsEditing(false);
         setCurrentVehicle({ name: '', brand: '', type: 'ô tô', price: 0, year: new Date().getFullYear(), description: '', image: '', quantity: 0 });
+        setImageFile(null);
         setShowModal(true);
     };
 
     const handleShowEditModal = (vehicle) => {
         setIsEditing(true);
         setCurrentVehicle(vehicle);
+        setImageFile(null);
         setShowModal(true);
     };
 
@@ -60,22 +64,54 @@ const ManageVehicles = () => {
     };
     
     const handleFormChange = (e) => {
-        const { name, value } = e.target;
-        setCurrentVehicle(prev => ({ ...prev, [name]: value }));
+        const { name, value, files } = e.target;
+        if (name === 'image') {
+            setImageFile(files[0]);
+        } else {
+            setCurrentVehicle(prev => ({ ...prev, [name]: value }));
+        }
     };
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        const method = isEditing ? 'put' : 'post';
-        const url = isEditing ? `/vehicles/${currentVehicle._id}` : '/vehicles';
 
-        try {
-            await api[method](url, currentVehicle);
-            handleCloseModal();
-            fetchVehicles(); // Refresh list
-        } catch (err) {
-            const message = err.response?.data?.message || (isEditing ? 'Failed to update vehicle.' : 'Failed to create vehicle.');
-            alert(message);
+        if (isEditing) {
+            // Handle update logic (no file change)
+            try {
+                await api.put(`/vehicles/${currentVehicle._id}`, currentVehicle);
+                handleCloseModal();
+                fetchVehicles();
+            } catch (err) {
+                alert(err.response?.data?.message || 'Failed to update vehicle.');
+            }
+        } else {
+            // Handle create logic with file upload
+            if (!imageFile) {
+                alert('Please select an image to upload.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('name', currentVehicle.name);
+            formData.append('brand', currentVehicle.brand);
+            formData.append('type', currentVehicle.type);
+            formData.append('price', currentVehicle.price);
+            formData.append('year', currentVehicle.year);
+            formData.append('description', currentVehicle.description);
+            formData.append('quantity', currentVehicle.quantity);
+            formData.append('image', imageFile);
+
+            try {
+                await api.post('/vehicles', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                handleCloseModal();
+                fetchVehicles();
+            } catch (err) {
+                alert(err.response?.data?.message || 'Failed to create vehicle.');
+            }
         }
     };
 
@@ -150,9 +186,13 @@ const ManageVehicles = () => {
                                 <Form.Label>Description</Form.Label>
                                 <Form.Control as="textarea" rows={3} name="description" value={currentVehicle.description} onChange={handleFormChange} required />
                             </Form.Group>
-                             <Form.Group className="mb-3">
-                                <Form.Label>Image URL</Form.Label>
-                                <Form.Control type="text" name="image" value={currentVehicle.image} onChange={handleFormChange} required placeholder="/images/my-car.png" />
+                            <Form.Group className="mb-3">
+                                <Form.Label>{isEditing ? 'Image URL' : 'Image'}</Form.Label>
+                                {isEditing ? (
+                                     <Form.Control type="text" name="image" value={currentVehicle.image} disabled />
+                                ) : (
+                                     <Form.Control type="file" name="image" onChange={handleFormChange} required />
+                                )}
                             </Form.Group>
                              <Form.Group className="mb-3">
                                 <Form.Label>Quantity (Stock)</Form.Label>

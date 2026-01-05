@@ -7,6 +7,7 @@ const {
   deleteVehicle,
 } = require('../controllers/vehicle.controller');
 
+const upload = require('../middleware/upload');
 const { protect } = require('../middleware/auth');
 const { authorize } = require('../middleware/role');
 
@@ -15,7 +16,7 @@ const router = express.Router();
 router
   .route('/')
   .get(getVehicles)
-  .post(protect, authorize('admin'), createVehicle);
+  .post(protect, authorize('admin'), upload, createVehicle);
 
 router
   .route('/:id')

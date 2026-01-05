@@ -45,10 +45,21 @@ exports.getVehicle = async (req, res, next) => {
 
 // @desc    Create new vehicle
 // @route   POST /api/vehicles
-// @access  Private (Admin or User)
+// @access  Private (Admin)
 exports.createVehicle = async (req, res, next) => {
   try {
-    const vehicle = await Vehicle.create(req.body);
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'Please upload an image' });
+    }
+
+    const imageUrl = `/images/${req.file.filename}`;
+
+    const vehicleData = {
+      ...req.body,
+      image: imageUrl,
+    };
+
+    const vehicle = await Vehicle.create(vehicleData);
     res.status(201).json({ success: true, data: vehicle });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
