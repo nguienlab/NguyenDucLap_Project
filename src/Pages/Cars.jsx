@@ -74,99 +74,210 @@ export default function Cars() {
   return (
     <div className="cars-page">
       <div className="cars-bg" />
-      <div className="container px-2 px-md-5 cars-content">
-        <CarouselHero />
-        <motion.h2
-          className="cars-title"
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          {keyword ? `Results for "${keyword}"` : "All Cars"}
-        </motion.h2>
+      <div className="cars-content">
+        {/* Hero Banner */}
+        <div className="cars-hero-section">
+          <CarouselHero />
+        </div>
 
-        <motion.form
-          className="row g-3 mb-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          onSubmit={handleLocalSearchSubmit}
-        >
-          <div className="col-12 col-md-3">
-            <input
-              value={q}
-              onChange={e => setQ(e.target.value)}
-              className="form-control"
-              placeholder="Search by name..."
-            />
-          </div>
-          <div className="col-6 col-md-2">
-            <select
-              value={type}
-              onChange={e => setType(e.target.value)}
-              className="form-select"
+        {/* Main Content */}
+        <div className="container px-2 px-md-5 py-5">
+          {/* Title Section */}
+          <motion.div
+            className="title-section mb-5"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <h1 className="cars-title">
+              {keyword ? `Kết quả tìm kiếm cho "${keyword}"` : "Khám Phá Các Phương Tiện"}
+            </h1>
+            <p className="cars-subtitle">
+              Tìm thấy {filtered.length} phương tiện
+            </p>
+          </motion.div>
+
+          {/* Filter Section */}
+          <motion.div
+            className="filter-section mb-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+          >
+            <div className="filter-card">
+              <h5 className="filter-title mb-4">🔍 Lọc Phương Tiện</h5>
+              <form onSubmit={handleLocalSearchSubmit}>
+                <div className="row g-3">
+                  <div className="col-12 col-md-3">
+                    <label className="form-label">Tìm Kiếm</label>
+                    <input
+                      value={q}
+                      onChange={e => setQ(e.target.value)}
+                      className="form-control filter-input"
+                      placeholder="Theo tên..."
+                    />
+                  </div>
+                  <div className="col-12 col-md-2">
+                    <label className="form-label">Loại</label>
+                    <select
+                      value={type}
+                      onChange={e => setType(e.target.value)}
+                      className="form-select filter-input"
+                    >
+                      <option value="all">Tất cả loại</option>
+                      <option value="ô tô">Ô tô</option>
+                      <option value="xe máy">Xe máy</option>
+                    </select>
+                  </div>
+                  <div className="col-12 col-md-2">
+                    <label className="form-label">Thương Hiệu</label>
+                    <select
+                      value={brand}
+                      onChange={e => setBrand(e.target.value)}
+                      className="form-select filter-input"
+                    >
+                      <option value="all">Tất cả thương hiệu</option>
+                      {brands.map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
+                  </div>
+                  <div className="col-12 col-md-3">
+                    <label className="form-label">Giá Tối Đa (VND)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="10000000"
+                      value={maxPrice}
+                      onChange={e => setMaxPrice(e.target.value)}
+                      className="form-control filter-input"
+                      placeholder="ví dụ: 500000000"
+                    />
+                  </div>
+                  <div className="col-12 col-md-2 d-flex align-items-end">
+                    <button type="submit" className="btn btn-filter w-100">Áp Dụng</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+
+          {/* Stats Section */}
+          {!loading && !error && (
+            <motion.div
+              className="stats-section mb-5"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
             >
-              <option value="all">All types</option>
-              <option value="ô tô">Ô tô</option>
-              <option value="xe máy">Xe máy</option>
-            </select>
-          </div>
-          <div className="col-6 col-md-2">
-            <select
-              value={brand}
-              onChange={e => setBrand(e.target.value)}
-              className="form-select"
-            >
-              <option value="all">All brands</option>
-              {brands.map(b => <option key={b} value={b}>{b}</option>)}
-            </select>
-          </div>
-          <div className="col-12 col-md-3">
-            <input
-              type="number"
-              min="0"
-              step="10000000"
-              value={maxPrice}
-              onChange={e => setMaxPrice(e.target.value)}
-              className="form-control"
-              placeholder="Max price (VND)"
-            />
-          </div>
-           <div className="col-12 col-md-2">
-            <button type="submit" className="btn btn-primary w-100">Filter</button>
-           </div>
-        </motion.form>
+              <div className="row g-3">
+                <div className="col-6 col-md-3">
+                  <div className="stat-card">
+                    <div className="stat-number">{allCars.length}</div>
+                    <div className="stat-label">Tổng Phương Tiện</div>
+                  </div>
+                </div>
+                <div className="col-6 col-md-3">
+                  <div className="stat-card">
+                    <div className="stat-number">{filtered.length}</div>
+                    <div className="stat-label">Kết Quả Khớp</div>
+                  </div>
+                </div>
+                <div className="col-6 col-md-3">
+                  <div className="stat-card">
+                    <div className="stat-number">{brands.length}</div>
+                    <div className="stat-label">Thương Hiệu Có Sẵn</div>
+                  </div>
+                </div>
+                <div className="col-6 col-md-3">
+                  <div className="stat-card">
+                    <div className="stat-number">24/7</div>
+                    <div className="stat-label">Hỗ Trợ</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
-        {loading && <p className="text-center w-100">Loading cars...</p>}
-        {error && <p className="text-danger text-center w-100">{error}</p>}
-
-        <div className="row g-4">
-          <AnimatePresence>
-            {!loading && !error && filtered.map((c, i) => (
-              <motion.div
-                key={c._id}
-                className="col-12 col-sm-6 col-lg-4"
-                initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <CarCard car={c} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {!loading && filtered.length === 0 && (
-            <motion.p
-              className="text-muted text-center w-100"
+          {/* Loading & Error States */}
+          {loading && (
+            <motion.div
+              className="text-center py-5"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              Không tìm thấy xe phù hợp.
-            </motion.p>
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Đang tải...</span>
+              </div>
+              <p className="mt-3">Đang tải phương tiện...</p>
+            </motion.div>
+          )}
+          {error && (
+            <motion.div
+              className="alert alert-danger text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              {error}
+            </motion.div>
+          )}
+
+          {/* Cars Grid */}
+          {!loading && !error && (
+            <motion.div
+              className="cars-grid-section"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              {filtered.length > 0 ? (
+                <div className="row g-4">
+                  <AnimatePresence>
+                    {filtered.map((c, i) => (
+                      <motion.div
+                        key={c._id}
+                        className="col-12 col-sm-6 col-lg-4"
+                        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.4, delay: i * 0.05 }}
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        <CarCard car={c} />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <motion.div
+                  className="empty-state text-center py-5"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <i className="bi bi-inbox" style={{ fontSize: "3rem", color: "#ccc" }}></i>
+                  <h4 className="mt-3">Không tìm thấy phương tiện</h4>
+                  <p className="text-muted">Thử điều chỉnh bộ lọc của bạn</p>
+                </motion.div>
+              )}
+            </motion.div>
           )}
         </div>
+
+        {/* CTA Section */}
+        {!loading && !error && (
+          <motion.div
+            className="cta-section py-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+          >
+            <div className="container px-2 px-md-5">
+              <div className="cta-card">
+              <h3>Không tìm thấy những gì bạn đang tìm kiếm?</h3>
+              <p>Liên hệ với đội bán hàng của chúng tôi để có thêm tùy chọn</p>
+              <a href="/contact" className="btn btn-cta">Liên Lạc Với Chúng Tôi</a>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

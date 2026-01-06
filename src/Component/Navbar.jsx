@@ -133,7 +133,7 @@ export default function Navbar() {
                   onClick={handleNavLinkClick}
                 >
 
-                  Home 
+                  Trang Chủ 
 
                 </NavLink>
               </li>
@@ -146,7 +146,7 @@ export default function Navbar() {
                   onClick={handleNavLinkClick}
                 >
 
-                  Cars 
+                  Xe 
 
                 </NavLink>
               </li>
@@ -159,7 +159,7 @@ export default function Navbar() {
                   onClick={handleNavLinkClick}
                 >
 
-                  About 
+                  Về Chúng Tôi 
 
                 </NavLink>
               </li>
@@ -172,25 +172,27 @@ export default function Navbar() {
                   onClick={handleNavLinkClick}
                 >
 
-                  Contact 
+                  Liên Hệ 
                 </NavLink>
               </li>
 
               {/* Auth Links */}
               {user ? (
                 <>
-                  <li className="nav-item">
-                     <NavLink
-                        to="/dashboard"
-                        className={({ isActive }) => "nav-link nav-icon-link" + (isActive ? " active-link" : "")}
-                        onClick={handleNavLinkClick}
-                      >
-                        Dashboard <i className="bi bi-grid-fill m-1"></i>
-                      </NavLink>
-                  </li>
+                  {user?.role === 'admin' && (
+                    <li className="nav-item">
+                       <NavLink
+                          to="/dashboard"
+                          className={({ isActive }) => "nav-link nav-icon-link" + (isActive ? " active-link" : "")}
+                          onClick={handleNavLinkClick}
+                        >
+                          Bảng Điều Khiển <i className="bi bi-grid-fill m-1"></i>
+                        </NavLink>
+                    </li>
+                  )}
                   <li className="nav-item">
                     <button className="btn btn-link nav-link nav-icon-link" onClick={handleLogout}>
-                      Logout <i className="bi bi-box-arrow-right m-1"></i>
+                      Đăng Xuất <i className="bi bi-box-arrow-right m-1"></i>
                     </button>
                   </li>
                 </>
@@ -206,7 +208,7 @@ export default function Navbar() {
                       aria-expanded="false"
                       onClick={handleNavLinkClick}
                     >
-                      Account 
+                      Tài Khoản 
                     </a>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
                       <li>
@@ -215,7 +217,7 @@ export default function Navbar() {
                           className={({ isActive }) => "dropdown-item" + (isActive ? " active-link" : "")}
                           onClick={handleNavLinkClick}
                         >
-                          Login
+                          Đăng Nhập
                         </NavLink>
                       </li>
                       <li>
@@ -224,7 +226,7 @@ export default function Navbar() {
                           className={({ isActive }) => "dropdown-item" + (isActive ? " active-link" : "")}
                           onClick={handleNavLinkClick}
                         >
-                          Register
+                          Đăng Ký
                         </NavLink>
                       </li>
                     </ul>

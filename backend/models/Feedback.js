@@ -18,6 +18,10 @@ const FeedbackSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please add a message"],
     },
+    subject: {
+        type: String,
+        required: [true, "Please add a subject"],
+    },
   },
   {
     timestamps: true,

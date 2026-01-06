@@ -30,22 +30,52 @@ export default function Home() {
 
   return (
     <div className="home-wrapper">
-      <div className="home-content mt-3 px-2 px-md-5">
-        {/* Hero */}
-        <CarouselHero />
+      <header className="home-hero">
+        <div className="hero-inner container">
+          <div className="hero-left">
+            <motion.h1
+              className="hero-head"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Chọn xe mơ ước — Dễ dàng và Uy tín
+            </motion.h1>
+            <motion.p
+              className="hero-lead"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Hàng trăm mẫu xe, giá tốt và dịch vụ hậu mãi tận tâm. Khám phá bộ sưu tập
+              của chúng tôi ngay hôm nay.
+            </motion.p>
+            <div className="hero-cta">
+              <a className="btn-hero" href="/cars">Xem xe nổi bật</a>
+              <a className="btn-ghost ms-3" href="/contact">Liên hệ ngay</a>
+            </div>
+          </div>
 
-        {/* Featured cars */}
-        <section className="container mt-5 px-0">
+          <div className="hero-right">
+            <div className="carousel-frame">
+              <CarouselHero />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="home-content container">
+        <section className="featured-section">
           <motion.h2
-            className="mb-3 text-center fw-bold"
-            initial={{ opacity: 0, y: -40 }}
+            className="section-title"
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
             Featured Cars
           </motion.h2>
 
-          <div className="row g-4">
+          <div className="cards-grid">
             {loading ? (
               <p>Loading...</p>
             ) : error ? (
@@ -54,11 +84,11 @@ export default function Home() {
               vehicles.map((c, index) => (
                 <motion.div
                   key={c._id}
-                  className="col-12 col-sm-6 col-lg-4"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  className="card-item"
+                  initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  whileHover={{ scale: 1.05 }}
+                  transition={{ delay: index * 0.06, duration: 0.45 }}
+                  whileHover={{ scale: 1.03 }}
                 >
                   <CarCard car={c} />
                 </motion.div>
@@ -67,10 +97,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Doanh số */}
-        <section className="container mt-5">
-          <h2 className="text-center mb-4">📊 Doanh số cửa hàng xe (2021-2025)</h2>
-          <div className="d-flex justify-content-between flex-wrap gap-3">
+        <section className="sales-section">
+          <h3 className="section-title">📊 Doanh số cửa hàng (2021–2025)</h3>
+          <div className="sales-grid">
             {[
               { year: 2021, count: "320 xe", rev: "35 tỷ" },
               { year: 2022, count: "450 xe", rev: "50 tỷ" },
@@ -80,117 +109,53 @@ export default function Home() {
             ].map((d, i) => (
               <motion.div
                 key={d.year}
-                className="p-3 rounded-4 shadow text-center bg-light flex-fill"
-                initial={{ opacity: 0, y: 30 }}
+                className="sales-card"
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
               >
-                <h5>{d.year}</h5>
-                <div className="fw-bold text-primary fs-5">{d.count}</div>
-                <small>Doanh thu: {d.rev}</small>
+                <div className="sales-year">{d.year}</div>
+                <div className="sales-count">{d.count}</div>
+                <div className="sales-rev">Doanh thu: {d.rev}</div>
               </motion.div>
             ))}
           </div>
         </section>
 
-        {/* Thành tựu */}
-        <section className="container mt-5">
-          <div className="row align-items-center">
-            <div className="col-md-6 mb-2">
-              <div className="d-flex flex-column gap-3">
-                <div className="d-flex justify-content-start">
-                  <motion.img
-                    src="/react-car-shop/images/sale1.png"
-                    alt="Khách hàng"
-                    className="img-fluid rounded-4 shadow img-sale"
-                    initial={{ opacity: 0, x: 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6 }}
-                  />
-                </div>
-                <div className="d-flex justify-content-end">
-                  <motion.img
-                    src="/react-car-shop/images/sale2.png"
-                    alt="Khách hàng"
-                    className="img-fluid rounded-4 shadow img-sale"
-                    initial={{ opacity: 0, x: 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6 }}
-                  />
-                </div>
-              </div>
-            </div>
+        <section className="split-section">
+          <div className="split-media">
+            <motion.img src="/react-car-shop/images/sale1.png" alt="sale" className="split-img" initial={{ x: 30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
+            <motion.img src="/react-car-shop/images/sale2.png" alt="sale2" className="split-img" initial={{ x: -30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
+          </div>
 
-            <div className="col-md-6">
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <h3 className="fw-bold">Doanh số 2024</h3>
-                <p className="lead">
-                  Chúng tôi đã bán hơn <strong>10.000 xe</strong> trong năm qua,
-                  mở rộng khắp 20 tỉnh thành, đạt tỷ lệ hài lòng khách hàng 98%.
-                </p>
-                <ul>
-                  <li>10 showroom trên toàn quốc</li>
-                  <li>Dịch vụ hậu mãi tận tâm</li>
-                  <li>Khuyến mãi hấp dẫn quanh năm</li>
-                </ul>
-              </motion.div>
-            </div>
+          <div className="split-text">
+            <h3>Doanh số 2024</h3>
+            <p className="lead">Chúng tôi đã bán hơn <strong>10.000 xe</strong> trong năm qua, mở rộng khắp 20 tỉnh thành, đạt tỷ lệ hài lòng 98%.</p>
+            <ul>
+              <li>10 showroom trên toàn quốc</li>
+              <li>Dịch vụ hậu mãi tận tâm</li>
+              <li>Khuyến mãi hấp dẫn quanh năm</li>
+            </ul>
           </div>
         </section>
 
-        {/* Khách hàng */}
-        <section className="container mt-5">
-          <div className="row align-items-center">
-            <div className="col-md-6 mb-2">
-              <div className="d-flex flex-column gap-3">
-                <div className="d-flex justify-content-start">
-                  <motion.img
-                    src="/react-car-shop/images/cus1.png"
-                    alt="Khách hàng"
-                    className="img-fluid rounded-4 shadow img-sale"
-                    initial={{ opacity: 0, x: 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6 }}
-                  />
-                </div>
-                <div className="d-flex justify-content-end">
-                  <motion.img
-                    src="/react-car-shop/images/cus5.png"
-                    alt="Khách hàng"
-                    className="img-fluid rounded-4 shadow img-sale"
-                    initial={{ opacity: 0, x: 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6 }}
-                  />
-                </div>
-              </div>
-            </div>
+        <section className="split-section reverse">
+          <div className="split-media">
+            <motion.img src="/react-car-shop/images/cus1.png" alt="cus1" className="split-img" initial={{ x: -30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
+            <motion.img src="/react-car-shop/images/cus5.png" alt="cus5" className="split-img" initial={{ x: 30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
+          </div>
 
-            <div className="col-md-6 order-md-1">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <h3 className="fw-bold">Khách hàng & Dịch vụ</h3>
-                <p className="lead">
-                  Hơn <strong>5000 khách hàng</strong> đã tin tưởng. Chúng tôi xây dựng
-                  cộng đồng yêu xe năng động với nhiều ưu đãi đặc biệt.
-                </p>
-                <ul>
-                  <li>Hỗ trợ tài chính linh hoạt</li>
-                  <li>Bảo hành lên tới 5 năm</li>
-                  <li>Sự kiện lái thử thường xuyên</li>
-                </ul>
-              </motion.div>
-            </div>
+          <div className="split-text">
+            <h3>Khách hàng & Dịch vụ</h3>
+            <p className="lead">Hơn <strong>5000 khách hàng</strong> đã tin tưởng. Chúng tôi xây dựng cộng đồng yêu xe năng động với nhiều ưu đãi.</p>
+            <ul>
+              <li>Hỗ trợ tài chính linh hoạt</li>
+              <li>Bảo hành lên tới 5 năm</li>
+              <li>Sự kiện lái thử thường xuyên</li>
+            </ul>
           </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }

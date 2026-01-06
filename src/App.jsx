@@ -17,9 +17,11 @@ import AdminRoute from "./Component/AdminRoute";
 import DashboardLayout from "./Pages/Dashboard/DashboardLayout";
 import UserDashboard from "./Pages/Dashboard/UserDashboard";
 import MyOrders from "./Pages/Dashboard/MyOrders";
+import MyProfile from "./Pages/Dashboard/MyProfile";
 import ManageVehicles from "./Pages/Dashboard/ManageVehicles";
 import ManageUsers from "./Pages/Dashboard/ManageUsers";
 import ManageOrders from "./Pages/Dashboard/ManageOrders";
+import ManageFeedbacks from "./Pages/Dashboard/ManageFeedbacks";
 import Checkout from "./Pages/Checkout";
 import ProductDetailPanel from "./Component/ProductDetailPanel";
 import { useProductDetail } from "./context/ProductDetailContext";
@@ -62,11 +64,13 @@ export default function App() {
             <Route path="/dashboard" element={<AdminRoute />}> {/* AdminRoute here */}
               <Route element={<DashboardLayout />}>
                 <Route index element={<UserDashboard />} /> {/* Admin Dashboard Home */}
+                <Route path="my-profile" element={<MyProfile />} /> {/* User Profile in Dashboard */}
                 
                 {/* Admin Management Routes */}
                 <Route path="manage-vehicles" element={<ManageVehicles />} />
                 <Route path="manage-users" element={<ManageUsers />} />
                 <Route path="manage-orders" element={<ManageOrders />} />
+                <Route path="manage-feedbacks" element={<ManageFeedbacks />} />
               </Route>
             </Route>
 

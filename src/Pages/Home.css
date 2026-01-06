@@ -1,16 +1,56 @@
 .home-wrapper {
   min-height: 80vh;
-  background-image: url("/react-car-shop/images/banner-bg.png");
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)), url('/react-car-shop/images/banner-bg.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   overflow: hidden;
 }
 
-.home-content {
-  padding-top: 0px;
+.home-hero {
+  padding: 3.2rem 0;
+  position: relative;
+  color: #0b1220;
 }
 
-.img-sale {
-  width: 60%;
+.hero-inner { display:flex; gap:2rem; align-items:center; }
+.hero-left { flex: 0.55; }
+.hero-right { flex: 0.45; display:flex; justify-content:center; }
+.carousel-frame { width:100%; max-width:520px; border-radius:18px; overflow:hidden; box-shadow: 0 20px 60px rgba(11,18,32,0.35); }
+
+.hero-head { font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin:0 0 1rem 0; font-weight:800; }
+.hero-lead { color: rgba(11,18,32,0.8); margin-bottom:1rem; }
+.hero-cta { margin-top: 1rem; }
+.btn-hero { background: linear-gradient(90deg,#ff9900,#ff6a00); color:#0b1220; padding:0.7rem 1.2rem; border-radius:10px; font-weight:700; text-decoration:none; }
+.btn-ghost { background: transparent; color: #0b1220; padding:0.6rem 1rem; border-radius:10px; border:1px solid rgba(11,18,32,0.06); text-decoration:none; }
+
+.home-content { padding-top: 2.5rem; }
+
+.featured-section { margin-top: 1.5rem; }
+.section-title { font-size: 1.6rem; font-weight:800; margin-bottom:1rem; color:#0b1220 }
+
+.cards-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:1.2rem; }
+.card-item { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:0.6rem; border-radius:12px; box-shadow: 0 8px 30px rgba(2,6,23,0.06); }
+
+.sales-section { margin-top:2rem; }
+.sales-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap:1rem; }
+.sales-card { background: #fff; padding:1rem; border-radius:12px; box-shadow: 0 6px 20px rgba(11,18,32,0.06); text-align:center; }
+.sales-year { font-weight:700; color:#374151 }
+.sales-count { font-weight:900; font-size:1.1rem; color:#d97706 }
+.sales-rev { color:#6b7280; font-size:0.9rem }
+
+.split-section { display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; align-items:center; margin-top:2.4rem; }
+.split-section.reverse { grid-template-columns: 1fr 1fr; }
+.split-media { display:flex; gap:0.6rem; justify-content:center; }
+.split-img { width:48%; border-radius:12px; box-shadow: 0 12px 36px rgba(2,6,23,0.12); }
+.split-text { padding:0.8rem; }
+
+@media (max-width: 900px) {
+  .hero-inner { flex-direction:column-reverse; }
+  .hero-right, .hero-left { width:100%; }
+  .split-section { grid-template-columns: 1fr; }
+  .carousel-frame { max-width: 100%; }
+  .cards-grid { grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); }
 }
+
+.img-sale { width: 60%; }
