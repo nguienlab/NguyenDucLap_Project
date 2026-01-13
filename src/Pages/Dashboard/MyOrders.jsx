@@ -16,7 +16,7 @@ const MyOrders = () => {
                 setOrders(res.data.data);
                 setError(null);
             } catch (err) {
-                setError('Failed to fetch orders.');
+                setError('Không thể tải đơn hàng của bạn.');
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -28,37 +28,52 @@ const MyOrders = () => {
     
     const formattedPrice = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 
-    if (loading) return <div>Loading your orders...</div>;
+    if (loading) return <div>Đang tải đơn hàng của bạn...</div>;
     if (error) return <div className="alert alert-danger">{error}</div>;
 
     return (
         <div>
-            <h2>My Orders</h2>
+            <h2 className="mb-4">Đơn Hàng Của Tôi</h2>
             {orders.length === 0 ? (
-                <p>You have no orders yet. <Link to="/cars">Start shopping!</Link></p>
+                <div className="alert alert-info">
+                    Bạn chưa có đơn hàng nào. <Link to="/cars" className="alert-link">Bắt đầu mua sắm ngay!</Link>
+                </div>
             ) : (
                 <div className="accordion" id="ordersAccordion">
                     {orders.map((order, index) => (
-                        <div className="accordion-item" key={order._id}>
+                        <div className="accordion-item mb-3 border-0 shadow-sm rounded-3 overflow-hidden" key={order._id}>
                             <h2 className="accordion-header" id={`heading${index}`}>
-                                <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={`#collapse${index}`} aria-expanded="true" aria-controls={`collapse${index}`}>
-                                    <span className="me-3">Order #{order._id.substring(0, 8)}...</span>
-                                    <span className="me-3">Date: {new Date(order.createdAt).toLocaleDateString()}</span>
-                                    <span className="me-3">Total: {formattedPrice(order.totalPrice)}</span>
-                                    <span className={`badge bg-${order.status === 'Đã hủy' ? 'danger' : 'success'}`}>{order.status}</span>
+                                <button className="accordion-button collapsed bg-white" type="button" data-bs-toggle="collapse" data-bs-target={`#collapse${index}`} aria-expanded="false" aria-controls={`collapse${index}`}>
+                                    <div className="d-flex flex-wrap w-100 justify-content-between align-items-center pe-3">
+                                        <span className="fw-bold text-dark">Mã Đơn: #{order._id.substring(18).toUpperCase()}</span>
+                                        <span className="text-muted small">Ngày: {new Date(order.createdAt).toLocaleDateString('vi-VN')}</span>
+                                        <span className="text-danger fw-bold">Tổng: {formattedPrice(order.totalPrice)}</span>
+                                        <span className={`badge rounded-pill bg-${
+                                            order.status === 'Đã giao' ? 'success' : 
+                                            order.status === 'Đã hủy' ? 'danger' : 
+                                            order.status === 'Đang giao' ? 'info' : 'warning'
+                                        }`}>{order.status}</span>
+                                    </div>
                                 </button>
                             </h2>
-                            <div id={`collapse${index}`} className="accordion-collapse collapse show" aria-labelledby={`heading${index}`} data-bs-parent="#ordersAccordion">
-                                <div className="accordion-body">
-                                    <h5>Order Items</h5>
-                                    <ul className="list-group">
+                            <div id={`collapse${index}`} className="accordion-collapse collapse" aria-labelledby={`heading${index}`} data-bs-parent="#ordersAccordion">
+                                <div className="accordion-body bg-light">
+                                    <h6 className="fw-bold mb-3">Chi tiết sản phẩm</h6>
+                                    <ul className="list-group list-group-flush rounded-3 shadow-sm">
                                         {order.orderItems.map(item => (
-                                            <li key={item._id} className="list-group-item d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <img src={item.image} alt={item.name} style={{width: '50px', height: '50px', objectFit: 'cover', marginRight: '1rem'}} />
-                                                    {item.name} (x{item.quantity})
+                                            <li key={item._id} className="list-group-item d-flex justify-content-between align-items-center py-3">
+                                                <div className="d-flex align-items-center">
+                                                    <img 
+                                                        src={item.image.startsWith('http') ? item.image : `${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${item.image}`} 
+                                                        alt={item.name} 
+                                                        style={{width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', marginRight: '1rem'}} 
+                                                    />
+                                                    <div>
+                                                        <div className="fw-bold">{item.name}</div>
+                                                        <small className="text-muted">Số lượng: {item.quantity}</small>
+                                                    </div>
                                                 </div>
-                                                <span>{formattedPrice(item.price * item.quantity)}</span>
+                                                <span className="fw-bold">{formattedPrice(item.price * item.quantity)}</span>
                                             </li>
                                         ))}
                                     </ul>

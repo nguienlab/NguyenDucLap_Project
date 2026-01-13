@@ -8,8 +8,10 @@ const AdminRoute = () => {
         return <div>Loading...</div>; // Or a spinner component
     }
 
-    // User must be logged in and have the 'admin' role
-    return token && user?.role === 'admin' ? <Outlet /> : <Navigate to="/login" replace />;
+    // User must be logged in and have the 'admin' or 'user' (staff) role with permission
+    const canAccess = user?.role === 'admin' || (user?.role === 'user' && user?.canAccessDashboard);
+    
+    return token && canAccess ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default AdminRoute;

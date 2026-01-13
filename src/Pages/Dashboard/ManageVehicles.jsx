@@ -21,7 +21,7 @@ const ManageVehicles = () => {
             setVehicles(res.data.data);
             setError(null);
         } catch (err) {
-            setError('Failed to fetch vehicles.');
+            setError('Không thể tải danh sách xe.');
         } finally {
             setLoading(false);
         }
@@ -53,12 +53,12 @@ const ManageVehicles = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this vehicle?')) {
+        if (window.confirm('Bạn có chắc chắn muốn xóa xe này không?')) {
             try {
                 await api.delete(`/vehicles/${id}`);
                 fetchVehicles(); // Refresh list
             } catch (err) {
-                alert('Failed to delete vehicle.');
+                alert('Xóa xe thất bại.');
             }
         }
     };
@@ -82,12 +82,12 @@ const ManageVehicles = () => {
                 handleCloseModal();
                 fetchVehicles();
             } catch (err) {
-                alert(err.response?.data?.message || 'Failed to update vehicle.');
+                alert(err.response?.data?.message || 'Cập nhật xe thất bại.');
             }
         } else {
             // Handle create logic with file upload
             if (!imageFile) {
-                alert('Please select an image to upload.');
+                alert('Vui lòng chọn ảnh để tải lên.');
                 return;
             }
 
@@ -110,19 +110,19 @@ const ManageVehicles = () => {
                 handleCloseModal();
                 fetchVehicles();
             } catch (err) {
-                alert(err.response?.data?.message || 'Failed to create vehicle.');
+                alert(err.response?.data?.message || 'Thêm xe mới thất bại.');
             }
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>Đang tải...</div>;
     if (error) return <div className="alert alert-danger">{error}</div>;
 
     return (
         <div>
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>Manage Vehicles</h2>
-                <Button variant="primary" onClick={handleShowCreateModal}>Create New Vehicle</Button>
+                <h2>Quản Lý Xe</h2>
+                <Button variant="warning" className="text-dark" onClick={handleShowCreateModal}>Thêm Xe Mới</Button>
             </div>
             
             <div className="row g-4">
@@ -136,14 +136,14 @@ const ManageVehicles = () => {
                                 style={{ height: '180px', objectFit: 'cover' }} 
                             />
                             <div className="card-body d-flex flex-column">
-                                <h5 className="card-title">{v.name}</h5>
-                                <p className="card-text mb-1"><strong>Brand:</strong> {v.brand}</p>
-                                <p className="card-text mb-1"><strong>Type:</strong> {v.type}</p>
-                                <p className="card-text mb-1"><strong>Price:</strong> {new Intl.NumberFormat('vi-VN').format(v.price)} VND</p>
-                                <p className="card-text"><strong>Stock:</strong> {v.quantity}</p>
+                                <h5 className="card-title fw-bold">{v.name}</h5>
+                                <p className="card-text mb-1"><strong>Hãng:</strong> {v.brand}</p>
+                                <p className="card-text mb-1"><strong>Loại:</strong> {v.type}</p>
+                                <p className="card-text mb-1 text-danger fw-bold"><strong>Giá:</strong> {new Intl.NumberFormat('vi-VN').format(v.price)} VND</p>
+                                <p className="card-text"><strong>Kho:</strong> {v.quantity}</p>
                                 <div className="mt-auto d-flex justify-content-end">
-                                    <Button variant="secondary" size="sm" className="me-2" onClick={() => handleShowEditModal(v)}>Edit</Button>
-                                    <Button variant="danger" size="sm" onClick={() => handleDelete(v._id)}>Delete</Button>
+                                    <Button variant="secondary" size="sm" className="me-2" onClick={() => handleShowEditModal(v)}>Sửa</Button>
+                                    <Button variant="danger" size="sm" onClick={() => handleDelete(v._id)}>Xóa</Button>
                                 </div>
                             </div>
                         </div>
@@ -154,40 +154,40 @@ const ManageVehicles = () => {
             {/* Create/Edit Modal */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{isEditing ? 'Edit Vehicle' : 'Create Vehicle'}</Modal.Title>
+                    <Modal.Title>{isEditing ? 'Chỉnh Sửa Xe' : 'Thêm Xe Mới'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {currentVehicle && (
                         <Form onSubmit={handleFormSubmit}>
                             <Form.Group className="mb-3">
-                                <Form.Label>Name</Form.Label>
+                                <Form.Label>Tên Xe</Form.Label>
                                 <Form.Control type="text" name="name" value={currentVehicle.name} onChange={handleFormChange} required />
                             </Form.Group>
                              <Form.Group className="mb-3">
-                                <Form.Label>Brand</Form.Label>
+                                <Form.Label>Hãng Xe</Form.Label>
                                 <Form.Control type="text" name="brand" value={currentVehicle.brand} onChange={handleFormChange} required />
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Label>Type</Form.Label>
+                                <Form.Label>Loại Xe</Form.Label>
                                 <Form.Select name="type" value={currentVehicle.type} onChange={handleFormChange}>
                                     <option value="ô tô">Ô tô</option>
                                     <option value="xe máy">Xe máy</option>
                                 </Form.Select>
                             </Form.Group>
                              <Form.Group className="mb-3">
-                                <Form.Label>Price (VND)</Form.Label>
+                                <Form.Label>Giá (VND)</Form.Label>
                                 <Form.Control type="number" name="price" value={currentVehicle.price} onChange={handleFormChange} required />
                             </Form.Group>
                              <Form.Group className="mb-3">
-                                <Form.Label>Year</Form.Label>
+                                <Form.Label>Năm Sản Xuất</Form.Label>
                                 <Form.Control type="number" name="year" value={currentVehicle.year} onChange={handleFormChange} required />
                             </Form.Group>
                              <Form.Group className="mb-3">
-                                <Form.Label>Description</Form.Label>
+                                <Form.Label>Mô Tả</Form.Label>
                                 <Form.Control as="textarea" rows={3} name="description" value={currentVehicle.description} onChange={handleFormChange} required />
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Label>{isEditing ? 'Image URL' : 'Image'}</Form.Label>
+                                <Form.Label>{isEditing ? 'Đường dẫn ảnh' : 'Ảnh'}</Form.Label>
                                 {isEditing ? (
                                      <Form.Control type="text" name="image" value={currentVehicle.image} disabled />
                                 ) : (
@@ -195,11 +195,11 @@ const ManageVehicles = () => {
                                 )}
                             </Form.Group>
                              <Form.Group className="mb-3">
-                                <Form.Label>Quantity (Stock)</Form.Label>
+                                <Form.Label>Số Lượng (Kho)</Form.Label>
                                 <Form.Control type="number" name="quantity" value={currentVehicle.quantity} onChange={handleFormChange} required />
                             </Form.Group>
-                            <Button variant="primary" type="submit">
-                                {isEditing ? 'Save Changes' : 'Create Vehicle'}
+                            <Button variant="warning" type="submit" className="w-100 text-dark fw-bold">
+                                {isEditing ? 'Lưu Thay Đổi' : 'Tạo Xe Mới'}
                             </Button>
                         </Form>
                     )}

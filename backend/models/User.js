@@ -26,6 +26,10 @@ const UserSchema = new mongoose.Schema({
     enum: ['user', 'admin', 'customer'],
     default: 'customer',
   },
+  canAccessDashboard: {
+    type: Boolean,
+    default: false,
+  },
   // Specific permissions for 'user' role
   permissions: {
     canDelete: {

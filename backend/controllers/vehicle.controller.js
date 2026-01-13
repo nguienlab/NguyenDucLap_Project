@@ -14,7 +14,7 @@ exports.getVehicles = async (req, res, next) => {
         }
       : {};
 
-    let query = Vehicle.find({ ...keyword });
+    let query = Vehicle.find({ ...keyword }).sort({ createdAt: -1 });
 
     if (req.query.limit) {
       query = query.limit(parseInt(req.query.limit));

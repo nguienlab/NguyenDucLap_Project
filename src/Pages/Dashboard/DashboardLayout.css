@@ -1,67 +1,250 @@
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-    background-image: url('/react-car-shop/images/banner-bg.png');
+:root {
+    --dash-bg: #f3f4f6;
+    --dash-sidebar-bg: #ffffff;
+    --dash-content-bg: #ffffff;
+    --dash-text-primary: #1f2937;
+    --dash-text-secondary: #6b7280;
+    --dash-accent: #ff9900; /* Cam chủ đạo */
+    --dash-accent-hover: #e68a00; /* Cam đậm */
+    --dash-danger: #ef4444;
+    --dash-success: #10b981;
+    --dash-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --dash-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    --dash-radius: 16px;
+    --sidebar-width: 280px;
 }
 
+/* Container chính */
+.dashboard-container {
+    display: flex;
+    min-height: calc(100vh - 80px); /* Trừ header */
+    background-color: var(--dash-bg);
+    padding: 20px;
+    gap: 20px;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Sidebar thiết kế mới: Floating & Glassy */
 .dashboard-sidebar {
-    width: 250px;
-    background-color: #343a40;
-    color: #fff;
-    padding: 1.5rem 1rem;
-    flex-shrink: 0;
-    position: sticky; /* Make the sidebar sticky */
-    top: 0;          /* Stick it to the top */
-    height: 100vh;   /* Occupy full viewport height */
-    overflow-y: auto; /* Allow scrolling within the sidebar if content overflows */
+    width: var(--sidebar-width);
+    background: var(--dash-sidebar-bg);
+    border-radius: var(--dash-radius);
+    padding: 24px;
+    box-shadow: var(--dash-shadow);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    position: sticky;
+    top: 20px;
+    transition: all 0.3s ease;
 }
 
 .sidebar-title {
-    text-align: center;
-    margin-bottom: 1.5rem;
     font-size: 1.5rem;
-    color: #ff9900ff;
-}
-
-.sidebar-subtitle {
-    font-size: 0.9rem;
-    color: #adb5bd;
+    font-weight: 700;
+    color: var(--dash-accent);
+    margin-bottom: 30px;
+    padding-left: 12px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
 }
 
+.sidebar-subtitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--dash-text-secondary);
+    font-weight: 600;
+    margin: 20px 0 10px 12px;
+    letter-spacing: 0.05em;
+}
+
+/* Link trong sidebar */
 .sidebar-link {
-    color: #dee2e6;
-    text-decoration: none;
-    padding: 0.75rem 1rem;
-    border-radius: 5px;
-    margin-bottom: 0.5rem;
-    transition: background-color 0.2s, color 0.2s;
     display: flex;
     align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: var(--dash-text-primary);
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.sidebar-link i {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+    margin-right: 12px;
+    color: var(--dash-text-secondary);
+    transition: color 0.2s;
 }
 
 .sidebar-link:hover {
-    background-color: #495057;
-    color: #fff;
+    background-color: #f9fafb;
+    color: var(--dash-accent);
+    transform: translateX(4px);
+}
+
+.sidebar-link:hover i {
+    color: var(--dash-accent);
 }
 
 .sidebar-link.active {
-    background-color: #ff9900ff;
-    color: #212529;
-    font-weight: bold;
+    background: linear-gradient(135deg, var(--dash-accent), #ffb347); /* Cam gradient */
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3); /* Bóng màu cam */
 }
 
+.sidebar-link.active i {
+    color: white;
+}
+
+/* Main Content Area */
 .dashboard-content {
-    flex-grow: 1;
-    padding: 2rem;
-    background-color: #f8f9fa;
-    overflow-y: auto;
+    flex: 1;
+    background: var(--dash-content-bg);
+    border-radius: var(--dash-radius);
+    padding: 30px;
+    box-shadow: var(--dash-shadow);
+    overflow-x: hidden;
+}
+
+/* Custom Table Style cho các trang Manage... */
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Tạo khoảng cách giữa các hàng */
+}
+
+.table thead th {
+    background-color: #f9fafb;
+    color: var(--dash-text-secondary);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border: none;
+    padding: 16px;
+}
+
+.table tbody tr {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.table tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--dash-shadow-hover);
+    z-index: 10;
+    position: relative;
+}
+
+.table td {
+    padding: 16px;
+    vertical-align: middle;
+    border: none;
+    color: var(--dash-text-primary);
+    border-top: 1px solid #f3f4f6;
+}
+
+.table td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.table td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* Nút bấm custom */
+.btn-sm {
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+}
+
+/* Dashboard Stats Cards (Cho trang chủ dashboard) */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--dash-accent);
+    box-shadow: var(--dash-shadow-hover);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 16px;
+}
+
+.stat-icon.blue { background-color: #e0e7ff; color: var(--dash-accent); }
+.stat-icon.green { background-color: #d1fae5; color: var(--dash-success); }
+.stat-icon.red { background-color: #fee2e2; color: var(--dash-danger); }
+.stat-icon.orange { background-color: #ffedd5; color: #ea580c; }
+
+.stat-info h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--dash-text-secondary);
+}
+
+.stat-info p {
+    margin: 5px 0 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dash-text-primary);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .dashboard-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+    .dashboard-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        margin-bottom: 20px;
+    }
 }

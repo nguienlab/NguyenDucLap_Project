@@ -16,7 +16,7 @@ const ManageOrders = () => {
             setOrders(res.data.data);
             setError(null);
         } catch (err) {
-            setError('Failed to fetch orders.');
+            setError('Không thể tải danh sách đơn hàng.');
             console.error(err);
         } finally {
             setLoading(false);
@@ -36,50 +36,65 @@ const ManageOrders = () => {
                 )
             );
         } catch (err) {
-            alert('Failed to update order status.');
+            alert('Cập nhật trạng thái đơn hàng thất bại.');
             console.error(err);
         }
     };
     
     const formattedPrice = (price) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 
-    if (loading) return <div>Loading orders...</div>;
+    if (loading) return <div>Đang tải đơn hàng...</div>;
     if (error) return <div className="alert alert-danger">{error}</div>;
 
     return (
         <div>
-            <h2>Manage All Orders</h2>
+            <h2 className="mb-4">Quản Lý Đơn Hàng</h2>
             <div className="table-responsive">
-                <table className="table table-striped table-hover">
-                    <thead>
+                <table className="table table-striped table-hover align-middle">
+                    <thead className="table-dark">
                         <tr>
-                            <th>Order ID</th>
-                            <th>User</th>
-                            <th>Date</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Mã Đơn</th>
+                            <th>Khách Hàng</th>
+                            <th>Ngày Đặt</th>
+                            <th>Tổng Tiền</th>
+                            <th>Trạng Thái</th>
+                            <th>Hành Động</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.map(order => (
-                            <tr key={order._id}>
-                                <td>{order._id.substring(0, 8)}...</td>
-                                <td>{order.user?.name || 'N/A'}</td>
-                                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                                <td>{formattedPrice(order.totalPrice)}</td>
-                                <td>{order.status}</td>
-                                <td>
-                                    <select 
-                                        className="form-select form-select-sm"
-                                        value={order.status}
-                                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                                    >
-                                        {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                    </select>
-                                </td>
+                        {orders.length > 0 ? (
+                            orders.map(order => (
+                                <tr key={order._id}>
+                                    <td><small>{order._id.substring(0, 8)}...</small></td>
+                                    <td>{order.user?.name || 'N/A'}</td>
+                                    <td>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</td>
+                                    <td className="text-danger fw-bold">{formattedPrice(order.totalPrice)}</td>
+                                    <td>
+                                        <span className={`badge bg-${
+                                            order.status === 'Đã giao' ? 'success' : 
+                                            order.status === 'Đã hủy' ? 'danger' : 
+                                            order.status === 'Đang giao' ? 'info' : 'warning'
+                                        }`}>
+                                            {order.status}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <select 
+                                            className="form-select form-select-sm"
+                                            value={order.status}
+                                            onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                                            style={{width: '150px'}}
+                                        >
+                                            {statusOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                        </select>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6" className="text-center">Chưa có đơn hàng nào.</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

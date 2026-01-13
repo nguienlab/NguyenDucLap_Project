@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"back-end.vehicles"}],"uuid":"f509e0144917462cb8f03bf6037873ab"}

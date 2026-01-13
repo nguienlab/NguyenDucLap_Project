@@ -9,23 +9,35 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/vehicles?limit=12`);
-        if (!res.ok) {
-          throw new Error('Failed to fetch vehicles');
-        }
-        const data = await res.json();
-        setVehicles(data.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  const fetchVehicles = async (isSilent = false) => {
+    try {
+      if (!isSilent) setLoading(true);
+      // Bỏ limit=12 để hiện tất cả xe
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/vehicles?t=${new Date().getTime()}`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch vehicles');
       }
-    };
+      const data = await res.json();
+      
+      // Chỉ cập nhật nếu dữ liệu thực sự thay đổi để tránh render thừa
+      setVehicles(data.data);
+    } catch (err) {
+      if (!isSilent) setError(err.message);
+    } finally {
+      if (!isSilent) setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    // Lần đầu tải dữ liệu
     fetchVehicles();
+
+    // Thiết lập polling mỗi 5 giây để cập nhật xe mới 'ngầm'
+    const interval = setInterval(() => {
+      fetchVehicles(true);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -66,35 +78,101 @@ export default function Home() {
 
       <main className="home-content container">
         <section className="featured-section">
-          <motion.h2
-            className="section-title"
+          <motion.div
+            className="d-flex justify-content-between align-items-end mb-5"
             initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
           >
-            Featured Cars
-          </motion.h2>
+            <div>
+              <h5 className="text-warning text-uppercase letter-spacing-2 mb-2">Bộ Sưu Tập</h5>
+              <h2 className="section-title m-0 display-5 fw-bold">Xe Nổi Bật</h2>
+            </div>
+            <a href="/cars" className="btn btn-outline-dark rounded-pill px-4">Xem Tất Cả <i className="bi bi-arrow-right ms-2"></i></a>
+          </motion.div>
 
-          <div className="cards-grid">
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>{error}</p>
-            ) : (
-              vehicles.map((c, index) => (
-                <motion.div
-                  key={c._id}
-                  className="card-item"
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.06, duration: 0.45 }}
-                  whileHover={{ scale: 1.03 }}
-                >
-                  <CarCard car={c} />
-                </motion.div>
-              ))
-            )}
-          </div>
+          {loading ? (
+            <div className="text-center py-5"><div className="spinner-border text-warning" role="status"></div></div>
+          ) : error ? (
+            <p className="text-danger text-center">{error}</p>
+          ) : (
+            <>
+               {/* Bento Grid Layout */}
+               <div className="row g-4 mb-5">
+                  {/* Spotlight Item (Big Left) */}
+                  {vehicles.length > 0 && (
+                    <div className="col-lg-7">
+                        <motion.div 
+                          className="h-100 position-relative rounded-4 overflow-hidden shadow-lg"
+                          initial={{ opacity: 0, x: -50 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          style={{ minHeight: '500px' }}
+                        >
+                           <img 
+                              src={`${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${vehicles[0].image}`} 
+                              alt={vehicles[0].name}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                           />
+                           <div className="position-absolute bottom-0 start-0 w-100 p-5" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)' }}>
+                              <span className="badge bg-warning text-dark mb-3 px-3 py-2">MỚI NHẤT</span>
+                              <h2 className="text-white display-6 fw-bold mb-2">{vehicles[0].name}</h2>
+                              <p className="text-white-50 mb-4" style={{ maxWidth: '80%' }}>{vehicles[0].description.substring(0, 100)}...</p>
+                              <div className="d-flex align-items-center gap-3">
+                                <h3 className="text-warning m-0 fw-bold">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(vehicles[0].price)}</h3>
+                                <button className="btn btn-light rounded-circle" style={{width: 50, height: 50}} onClick={() => window.location.href=`/cars`}>
+                                   <i className="bi bi-arrow-right"></i>
+                                </button>
+                              </div>
+                           </div>
+                        </motion.div>
+                    </div>
+                  )}
+
+                  {/* Secondary Items (Right Column) */}
+                  <div className="col-lg-5 d-flex flex-column gap-4">
+                      {vehicles.slice(1, 3).map((car, idx) => (
+                         <motion.div 
+                            key={car._id}
+                            className="flex-grow-1 position-relative rounded-4 overflow-hidden shadow"
+                            initial={{ opacity: 0, x: 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ delay: idx * 0.2 }}
+                            viewport={{ once: true }}
+                            style={{ minHeight: '240px' }}
+                         >
+                            <img 
+                              src={`${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${car.image}`} 
+                              alt={car.name}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                           />
+                           <div className="position-absolute top-0 start-0 w-100 h-100 p-4 d-flex flex-column justify-content-end" style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.8), transparent)' }}>
+                              <h4 className="text-white fw-bold">{car.name}</h4>
+                              <p className="text-warning fw-bold mb-0">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(car.price)}</p>
+                           </div>
+                         </motion.div>
+                      ))}
+                  </div>
+               </div>
+               
+               {/* Rest of Collection */}
+               <h4 className="fw-bold mb-4">Các mẫu xe khác</h4>
+               <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                {vehicles.slice(3).map((c, index) => (
+                  <motion.div
+                    key={c._id}
+                    className="card-item"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    viewport={{ once: true }}
+                  >
+                    <CarCard car={c} />
+                  </motion.div>
+                ))}
+              </div>
+            </>
+          )}
         </section>
 
         <section className="sales-section">

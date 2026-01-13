@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
-const ManageUsers = () => {
+const ManageCustomers = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { api, user: currentUser } = useAuth();
+    const { api } = useAuth();
     
     const roleOptions = ['user', 'admin', 'customer'];
 
@@ -13,10 +13,12 @@ const ManageUsers = () => {
         try {
             setLoading(true);
             const res = await api.get('/users');
-            setUsers(res.data.data);
+            // Chỉ lấy role customer
+            const customers = res.data.data.filter(u => u.role === 'customer');
+            setUsers(customers);
             setError(null);
         } catch (err) {
-            setError('Failed to fetch users.');
+            setError('Không thể tải danh sách khách hàng.');
             console.error(err);
         } finally {
             setLoading(false);
@@ -30,75 +32,72 @@ const ManageUsers = () => {
     const handleRoleChange = async (userId, newRole) => {
         try {
             await api.put(`/users/${userId}`, { role: newRole });
-             setUsers(prevUsers => 
-                prevUsers.map(user => 
-                    user._id === userId ? { ...user, role: newRole } : user
-                )
-            );
+            fetchUsers();
         } catch(err) {
-            alert('Failed to update user role.');
+            alert('Cập nhật vai trò thất bại.');
         }
     };
 
     const handleDeleteUser = async (userId) => {
-        if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        if (window.confirm('Bạn có chắc chắn muốn xóa khách hàng này?')) {
             try {
                 await api.delete(`/users/${userId}`);
                 setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
             } catch (err) {
-                alert('Failed to delete user.');
+                alert('Xóa người dùng thất bại.');
             }
         }
     };
 
-    if (loading) return <div>Loading users...</div>;
+    if (loading) return <div>Đang tải danh sách khách hàng...</div>;
     if (error) return <div className="alert alert-danger">{error}</div>;
 
     return (
         <div>
-            <h2>Manage Users</h2>
+            <h2 className="mb-4">Quản lý Khách hàng</h2>
             <div className="table-responsive">
-                <table className="table table-striped table-hover">
-                    <thead>
+                <table className="table table-striped table-hover align-middle">
+                    <thead className="table-success">
                         <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
+                            <th>Mã KH</th>
+                            <th>Tên</th>
                             <th>Email</th>
-                            <th>Role</th>
-                            <th>Actions</th>
+                            <th>Vai trò</th>
+                            <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => (
-                            <tr key={user._id}>
-                                <td>{user._id}</td>
-                                <td>{user.name}</td>
-                                <td>{user.email}</td>
-                                <td>
-                                    {currentUser._id === user._id ? (
-                                        <span>{user.role} (You)</span>
-                                    ) : (
+                         {users.length > 0 ? (
+                            users.map(user => (
+                                <tr key={user._id}>
+                                    <td><small>{user._id}</small></td>
+                                    <td>{user.name}</td>
+                                    <td>{user.email}</td>
+                                    <td>
                                         <select 
                                             className="form-select form-select-sm"
                                             value={user.role}
                                             onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                                            style={{width: '120px'}}
                                         >
                                             {roleOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                         </select>
-                                    )}
-                                </td>
-                                <td>
-                                    {currentUser._id !== user._id && (
+                                    </td>
+                                    <td>
                                         <button 
                                             className="btn btn-sm btn-danger"
                                             onClick={() => handleDeleteUser(user._id)}
                                         >
-                                            Delete
+                                            <i className="bi bi-trash"></i> Xóa
                                         </button>
-                                    )}
-                                </td>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5" className="text-center">Không tìm thấy khách hàng nào.</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
@@ -106,4 +105,4 @@ const ManageUsers = () => {
     );
 };
 
-export default ManageUsers;
+export default ManageCustomers;
