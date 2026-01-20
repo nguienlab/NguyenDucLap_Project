@@ -1,250 +1,163 @@
 :root {
-    --dash-bg: #f3f4f6;
-    --dash-sidebar-bg: #ffffff;
-    --dash-content-bg: #ffffff;
-    --dash-text-primary: #1f2937;
-    --dash-text-secondary: #6b7280;
-    --dash-accent: #ff9900; /* Cam chủ đạo */
-    --dash-accent-hover: #e68a00; /* Cam đậm */
-    --dash-danger: #ef4444;
-    --dash-success: #10b981;
+    --dash-bg: #FFFFFF; /* Changed to white */
+    --dash-content-bg: #FFFFFF;
+    --dash-text-primary: #1a1a1a; /* Changed to very dark gray/almost black */
+    --dash-text-secondary: #666666; /* Changed to dark gray */
+    --dash-accent: #333333; /* Changed to dark gray */
+    --dash-danger: #ef4444; /* Keep original red */
+    --dash-success: #10b981; /* Keep original green */
     --dash-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --dash-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-    --dash-radius: 16px;
-    --sidebar-width: 280px;
+    --dash-radius: 12px;
+    --sidebar-width: 260px; /* Match sidebar.css */
 }
 
-/* Container chính */
-.dashboard-container {
-    display: flex;
-    min-height: calc(100vh - 80px); /* Trừ header */
+body {
     background-color: var(--dash-bg);
-    padding: 20px;
-    gap: 20px;
+}
+
+.dashboard-layout {
+    display: flex;
     font-family: 'Segoe UI', 'Roboto', sans-serif;
 }
 
-/* Sidebar thiết kế mới: Floating & Glassy */
-.dashboard-sidebar {
-    width: var(--sidebar-width);
-    background: var(--dash-sidebar-bg);
+.dashboard-main-content {
+    flex-grow: 1;
+    margin-left: var(--sidebar-width);
+    padding: 2.5rem;
+    background-color: var(--dash-bg);
+    min-height: 100vh;
+}
+
+/* Common Card Style for content */
+.dashboard-main-content .card {
+    background-color: var(--dash-content-bg);
     border-radius: var(--dash-radius);
-    padding: 24px;
     box-shadow: var(--dash-shadow);
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 120px);
-    position: sticky;
-    top: 20px;
-    transition: all 0.3s ease;
+    padding: 2rem;
+    border: none;
 }
 
-.sidebar-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--dash-accent);
-    margin-bottom: 30px;
-    padding-left: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow-y: auto;
-}
-
-.sidebar-subtitle {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: var(--dash-text-secondary);
-    font-weight: 600;
-    margin: 20px 0 10px 12px;
-    letter-spacing: 0.05em;
-}
-
-/* Link trong sidebar */
-.sidebar-link {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    text-decoration: none;
-    color: var(--dash-text-primary);
-    border-radius: 12px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    border-left: 4px solid transparent;
-}
-
-.sidebar-link i {
-    font-size: 1.2rem;
-    width: 24px;
-    text-align: center;
-    margin-right: 12px;
-    color: var(--dash-text-secondary);
-    transition: color 0.2s;
-}
-
-.sidebar-link:hover {
-    background-color: #f9fafb;
-    color: var(--dash-accent);
-    transform: translateX(4px);
-}
-
-.sidebar-link:hover i {
-    color: var(--dash-accent);
-}
-
-.sidebar-link.active {
-    background: linear-gradient(135deg, var(--dash-accent), #ffb347); /* Cam gradient */
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3); /* Bóng màu cam */
-}
-
-.sidebar-link.active i {
-    color: white;
-}
-
-/* Main Content Area */
-.dashboard-content {
-    flex: 1;
-    background: var(--dash-content-bg);
-    border-radius: var(--dash-radius);
-    padding: 30px;
-    box-shadow: var(--dash-shadow);
-    overflow-x: hidden;
-}
-
-/* Custom Table Style cho các trang Manage... */
+/* Table styles for a more professional look */
 .table-responsive {
-    border-radius: 12px;
+    border-radius: var(--dash-radius);
     overflow: hidden;
+    border: 1px solid #e5e7eb;
 }
 
 .table {
     margin-bottom: 0;
-    border-collapse: separate;
-    border-spacing: 0 8px; /* Tạo khoảng cách giữa các hàng */
 }
 
 .table thead th {
-    background-color: #f9fafb;
-    color: var(--dash-text-secondary);
+    background-color: #f2f2f2;
+    color: var(--dash-text-primary);
     text-transform: uppercase;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.05em;
-    border: none;
-    padding: 16px;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 1rem 1.5rem;
 }
 
 .table tbody tr {
     background-color: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s;
+}
+
+.table tbody tr:last-of-type {
+    border-bottom: none;
 }
 
 .table tbody tr:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--dash-shadow-hover);
-    z-index: 10;
-    position: relative;
+    background-color: #f8f8f8;
 }
 
 .table td {
-    padding: 16px;
+    padding: 1rem 1.5rem;
     vertical-align: middle;
-    border: none;
     color: var(--dash-text-primary);
-    border-top: 1px solid #f3f4f6;
+    border: none;
 }
 
-.table td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-.table td:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-/* Nút bấm custom */
-.btn-sm {
-    border-radius: 8px;
-    padding: 6px 12px;
+/* Buttons */
+.btn {
+    border-radius: 0.5rem;
     font-weight: 500;
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.5px;
+    padding: 0.5rem 1rem;
 }
 
-/* Dashboard Stats Cards (Cho trang chủ dashboard) */
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+
+/* Dashboard Stats Cards */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .stat-card {
-    background: white;
-    padding: 24px;
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
+    background-color: var(--dash-content-bg);
+    padding: 1.5rem;
+    border-radius: var(--dash-radius);
+    box-shadow: var(--dash-shadow);
     display: flex;
     align-items: center;
-    transition: transform 0.2s;
+    border: 1px solid transparent;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
     border-color: var(--dash-accent);
-    box-shadow: var(--dash-shadow-hover);
+    box-shadow: 0 7px 15px -3px rgba(0,0,0,0.07);
 }
 
 .stat-icon {
     width: 50px;
     height: 50px;
-    border-radius: 12px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    margin-right: 16px;
+    margin-right: 1.5rem;
 }
 
-.stat-icon.blue { background-color: #e0e7ff; color: var(--dash-accent); }
-.stat-icon.green { background-color: #d1fae5; color: var(--dash-success); }
-.stat-icon.red { background-color: #fee2e2; color: var(--dash-danger); }
-.stat-icon.orange { background-color: #ffedd5; color: #ea580c; }
+.stat-icon.blue, .stat-icon.green, .stat-icon.red, .stat-icon.orange {
+    background-color: #e0e0e0; /* Light gray background */
+    color: #333333; /* Darker gray icon */
+}
 
 .stat-info h4 {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: var(--dash-text-secondary);
+    font-weight: 500;
 }
 
 .stat-info p {
-    margin: 5px 0 0;
-    font-size: 1.5rem;
+    margin: 0.25rem 0 0;
+    font-size: 1.75rem;
     font-weight: 700;
     color: var(--dash-text-primary);
 }
 
-/* Responsive */
+
+/* Responsive Design */
 @media (max-width: 992px) {
-    .dashboard-container {
+    .dashboard-layout {
         flex-direction: column;
-        padding: 10px;
     }
-    .dashboard-sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        top: 0;
-        margin-bottom: 20px;
+
+    .dashboard-main-content {
+        margin-left: 0;
+        padding: 1.5rem;
     }
+
+    /* The sidebar itself will handle its responsive state via sidebar.css */
 }

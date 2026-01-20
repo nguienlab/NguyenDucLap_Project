@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 
 const ManageVehicles = () => {
     const [vehicles, setVehicles] = useState([]);
+    const [filteredVehicles, setFilteredVehicles] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { api } = useAuth();
@@ -13,12 +15,14 @@ const ManageVehicles = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentVehicle, setCurrentVehicle] = useState(null);
     const [imageFile, setImageFile] = useState(null);
-    
+    const [previewUrl, setPreviewUrl] = useState('');
+
     const fetchVehicles = async () => {
         try {
             setLoading(true);
             const res = await api.get('/vehicles');
             setVehicles(res.data.data);
+            setFilteredVehicles(res.data.data); // Initially show all
             setError(null);
         } catch (err) {
             setError('Không thể tải danh sách xe.');
@@ -31,17 +35,30 @@ const ManageVehicles = () => {
         fetchVehicles();
     }, []);
 
+    // Effect for filtering
+    useEffect(() => {
+        const lowercasedTerm = searchTerm.toLowerCase();
+        const filtered = vehicles.filter(v => 
+            v.name.toLowerCase().includes(lowercasedTerm) ||
+            v.brand.toLowerCase().includes(lowercasedTerm)
+        );
+        setFilteredVehicles(filtered);
+    }, [searchTerm, vehicles]);
+
+
     const handleCloseModal = () => {
         setShowModal(false);
         setCurrentVehicle(null);
         setIsEditing(false);
         setImageFile(null);
+        setPreviewUrl('');
     };
 
     const handleShowCreateModal = () => {
         setIsEditing(false);
         setCurrentVehicle({ name: '', brand: '', type: 'ô tô', price: 0, year: new Date().getFullYear(), description: '', image: '', quantity: 0 });
         setImageFile(null);
+        setPreviewUrl('');
         setShowModal(true);
     };
 
@@ -49,6 +66,7 @@ const ManageVehicles = () => {
         setIsEditing(true);
         setCurrentVehicle(vehicle);
         setImageFile(null);
+        setPreviewUrl(vehicle.image ? `${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${vehicle.image}` : '');
         setShowModal(true);
     };
 
@@ -66,7 +84,13 @@ const ManageVehicles = () => {
     const handleFormChange = (e) => {
         const { name, value, files } = e.target;
         if (name === 'image') {
-            setImageFile(files[0]);
+            const file = files[0];
+            setImageFile(file);
+            if (file) {
+                setPreviewUrl(URL.createObjectURL(file));
+            } else {
+                setPreviewUrl('');
+            }
         } else {
             setCurrentVehicle(prev => ({ ...prev, [name]: value }));
         }
@@ -75,43 +99,40 @@ const ManageVehicles = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
 
-        if (isEditing) {
-            // Handle update logic (no file change)
-            try {
-                await api.put(`/vehicles/${currentVehicle._id}`, currentVehicle);
-                handleCloseModal();
-                fetchVehicles();
-            } catch (err) {
-                alert(err.response?.data?.message || 'Cập nhật xe thất bại.');
+        const formData = new FormData();
+        // Append all text fields
+        Object.keys(currentVehicle).forEach(key => {
+            if (key !== '_id' && key !== 'image') { // Don't append id or old image path
+                 formData.append(key, currentVehicle[key]);
             }
-        } else {
-            // Handle create logic with file upload
-            if (!imageFile) {
-                alert('Vui lòng chọn ảnh để tải lên.');
-                return;
-            }
+        });
 
-            const formData = new FormData();
-            formData.append('name', currentVehicle.name);
-            formData.append('brand', currentVehicle.brand);
-            formData.append('type', currentVehicle.type);
-            formData.append('price', currentVehicle.price);
-            formData.append('year', currentVehicle.year);
-            formData.append('description', currentVehicle.description);
-            formData.append('quantity', currentVehicle.quantity);
+        // Append new image file if it exists
+        if (imageFile) {
             formData.append('image', imageFile);
+        }
 
-            try {
-                await api.post('/vehicles', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
+        try {
+            if (isEditing) {
+                // UPDATE
+                await api.put(`/vehicles/${currentVehicle._id}`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
                 });
-                handleCloseModal();
-                fetchVehicles();
-            } catch (err) {
-                alert(err.response?.data?.message || 'Thêm xe mới thất bại.');
+            } else {
+                // CREATE
+                 if (!imageFile) {
+                    alert('Vui lòng chọn ảnh để tải lên.');
+                    return;
+                }
+                await api.post('/vehicles', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
             }
+            handleCloseModal();
+            fetchVehicles();
+        } catch (err) {
+            const errorMsg = err.response?.data?.message || (isEditing ? 'Cập nhật xe thất bại.' : 'Thêm xe mới thất bại.');
+            alert(errorMsg);
         }
     };
 
@@ -120,85 +141,152 @@ const ManageVehicles = () => {
 
     return (
         <div>
-            <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="d-flex justify-content-between align-items-center mb-4">
                 <h2>Quản Lý Xe</h2>
                 <Button variant="warning" className="text-dark" onClick={handleShowCreateModal}>Thêm Xe Mới</Button>
             </div>
             
-            <div className="row g-4">
-                {vehicles.map(v => (
-                    <div key={v._id} className="col-12 col-sm-6 col-lg-3">
-                        <div className="card h-100 shadow-sm">
-                             <img 
-                                src={`${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${v.image}`} 
-                                className="card-img-top" 
-                                alt={v.name} 
-                                style={{ height: '180px', objectFit: 'cover' }} 
-                            />
-                            <div className="card-body d-flex flex-column">
-                                <h5 className="card-title fw-bold">{v.name}</h5>
-                                <p className="card-text mb-1"><strong>Hãng:</strong> {v.brand}</p>
-                                <p className="card-text mb-1"><strong>Loại:</strong> {v.type}</p>
-                                <p className="card-text mb-1 text-danger fw-bold"><strong>Giá:</strong> {new Intl.NumberFormat('vi-VN').format(v.price)} VND</p>
-                                <p className="card-text"><strong>Kho:</strong> {v.quantity}</p>
-                                <div className="mt-auto d-flex justify-content-end">
-                                    <Button variant="secondary" size="sm" className="me-2" onClick={() => handleShowEditModal(v)}>Sửa</Button>
-                                    <Button variant="danger" size="sm" onClick={() => handleDelete(v._id)}>Xóa</Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+            <Form.Control
+                type="text"
+                placeholder="Tìm kiếm theo tên xe, hãng..."
+                className="mb-3"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <div className="table-responsive">
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Tên Xe</th>
+                            <th>Hãng</th>
+                            <th>Loại</th>
+                            <th>Giá (VND)</th>
+                            <th>Kho</th>
+                            <th className="text-end">Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredVehicles.map(v => (
+                            <tr key={v._id}>
+                                <td>
+                                    <img 
+                                        src={`${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${v.image}`} 
+                                        alt={v.name} 
+                                        style={{ width: '100px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }} 
+                                    />
+                                </td>
+                                <td className="fw-bold">{v.name}</td>
+                                <td>{v.brand}</td>
+                                <td>{v.type}</td>
+                                <td className="text-danger fw-bold">{new Intl.NumberFormat('vi-VN').format(v.price)}</td>
+                                <td>{v.quantity}</td>
+                                <td className="text-end">
+                                    <Button variant="outline-secondary" size="sm" className="me-2" onClick={() => handleShowEditModal(v)}>
+                                        <i className="bi bi-pencil-square"></i> Sửa
+                                    </Button>
+                                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(v._id)}>
+                                        <i className="bi bi-trash"></i> Xóa
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
 
             {/* Create/Edit Modal */}
-            <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal show={showModal} onHide={handleCloseModal} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>{isEditing ? 'Chỉnh Sửa Xe' : 'Thêm Xe Mới'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {currentVehicle && (
                         <Form onSubmit={handleFormSubmit}>
+                            <Row>
+                                {/* Left Column: Image Preview & Upload */}
+                                <Col md={5}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{isEditing ? 'Ảnh Hiện Tại / Mới' : 'Ảnh Xe'}</Form.Label>
+                                        <div 
+                                            className="w-100 d-flex justify-content-center align-items-center bg-light" 
+                                            style={{ 
+                                                height: '200px', 
+                                                borderRadius: '8px', 
+                                                border: '2px dashed #ddd',
+                                                overflow: 'hidden' 
+                                            }}
+                                        >
+                                            {previewUrl ? (
+                                                <img src={previewUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            ) : (
+                                                <div className="text-center text-muted">
+                                                    <i className="bi bi-image" style={{fontSize: '3rem'}}></i>
+                                                    <p>Chưa có ảnh</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="d-none">Image Upload</Form.Label>
+                                        <Form.Control 
+                                            type="file" 
+                                            name="image" 
+                                            onChange={handleFormChange} 
+                                            accept="image/*" 
+                                        />
+                                    </Form.Group>
+                                </Col>
+
+                                {/* Right Column: Form Fields */}
+                                <Col md={7}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Tên Xe</Form.Label>
+                                        <Form.Control type="text" name="name" value={currentVehicle.name} onChange={handleFormChange} required />
+                                    </Form.Group>
+                                     <Form.Group className="mb-3">
+                                        <Form.Label>Hãng Xe</Form.Label>
+                                        <Form.Control type="text" name="brand" value={currentVehicle.brand} onChange={handleFormChange} required />
+                                    </Form.Group>
+                                    <Row>
+                                        <Col>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Loại Xe</Form.Label>
+                                                <Form.Select name="type" value={currentVehicle.type} onChange={handleFormChange}>
+                                                    <option value="ô tô">Ô tô</option>
+                                                    <option value="xe máy">Xe máy</option>
+                                                </Form.Select>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Giá (VND)</Form.Label>
+                                                <Form.Control type="number" name="price" value={currentVehicle.price} onChange={handleFormChange} required />
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Năm</Form.Label>
+                                                <Form.Control type="number" name="year" value={currentVehicle.year} onChange={handleFormChange} required />
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                             <Form.Group className="mb-3">
+                                                <Form.Label>Kho</Form.Label>
+                                                <Form.Control type="number" name="quantity" value={currentVehicle.quantity} onChange={handleFormChange} required />
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
                             <Form.Group className="mb-3">
-                                <Form.Label>Tên Xe</Form.Label>
-                                <Form.Control type="text" name="name" value={currentVehicle.name} onChange={handleFormChange} required />
-                            </Form.Group>
-                             <Form.Group className="mb-3">
-                                <Form.Label>Hãng Xe</Form.Label>
-                                <Form.Control type="text" name="brand" value={currentVehicle.brand} onChange={handleFormChange} required />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Loại Xe</Form.Label>
-                                <Form.Select name="type" value={currentVehicle.type} onChange={handleFormChange}>
-                                    <option value="ô tô">Ô tô</option>
-                                    <option value="xe máy">Xe máy</option>
-                                </Form.Select>
-                            </Form.Group>
-                             <Form.Group className="mb-3">
-                                <Form.Label>Giá (VND)</Form.Label>
-                                <Form.Control type="number" name="price" value={currentVehicle.price} onChange={handleFormChange} required />
-                            </Form.Group>
-                             <Form.Group className="mb-3">
-                                <Form.Label>Năm Sản Xuất</Form.Label>
-                                <Form.Control type="number" name="year" value={currentVehicle.year} onChange={handleFormChange} required />
-                            </Form.Group>
-                             <Form.Group className="mb-3">
                                 <Form.Label>Mô Tả</Form.Label>
                                 <Form.Control as="textarea" rows={3} name="description" value={currentVehicle.description} onChange={handleFormChange} required />
                             </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{isEditing ? 'Đường dẫn ảnh' : 'Ảnh'}</Form.Label>
-                                {isEditing ? (
-                                     <Form.Control type="text" name="image" value={currentVehicle.image} disabled />
-                                ) : (
-                                     <Form.Control type="file" name="image" onChange={handleFormChange} required />
-                                )}
-                            </Form.Group>
-                             <Form.Group className="mb-3">
-                                <Form.Label>Số Lượng (Kho)</Form.Label>
-                                <Form.Control type="number" name="quantity" value={currentVehicle.quantity} onChange={handleFormChange} required />
-                            </Form.Group>
-                            <Button variant="warning" type="submit" className="w-100 text-dark fw-bold">
+                            <Button variant="warning" type="submit" className="w-100 text-dark fw-bold mt-3">
                                 {isEditing ? 'Lưu Thay Đổi' : 'Tạo Xe Mới'}
                             </Button>
                         </Form>

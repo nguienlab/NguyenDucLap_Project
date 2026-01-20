@@ -23,7 +23,7 @@ const UserDashboard = () => {
             <div className="d-flex justify-content-between align-items-center mb-5">
                 <div>
                     <div className="d-flex align-items-center gap-2 mb-1">
-                        <h2 className="fw-bold text-dark m-0">Xin chào, {user?.name}! 👋</h2>
+                        <h2 className="fw-bold text-dark m-0">Xin chào, {user?.name}!</h2>
                         {isAdmin && <span className="badge bg-danger rounded-pill">Quản Trị Viên</span>}
                         {isStaff && <span className="badge bg-success rounded-pill">Nhân Viên</span>}
                     </div>
@@ -80,14 +80,13 @@ const UserDashboard = () => {
                 </div>
                 
                 <div className="col-lg-4 mb-4">
-                    <div className="card border-0 shadow-sm rounded-4 h-100 p-4 text-white" 
-                         style={{background: 'linear-gradient(135deg, #ff9900, #ffc107)'}}>
-                        <h5 className="fw-bold mb-3 text-white">Lối tắt</h5>
+                    <div className="card border-0 shadow-sm rounded-4 h-100 p-4">
+                        <h5 className="fw-bold mb-3">Lối tắt</h5>
                         <div className="d-grid gap-2">
-                            <Link to="/profile/my-orders" className="btn btn-light text-warning fw-bold text-start">
+                            <Link to="/profile/my-orders" className="btn btn-outline-secondary fw-bold text-start">
                                 <i className="bi bi-box-seam me-2"></i> Kiểm tra đơn hàng
                             </Link>
-                            <Link to="/cars" className="btn btn-outline-light text-white fw-bold text-start">
+                            <Link to="/cars" className="btn btn-outline-secondary fw-bold text-start">
                                 <i className="bi bi-search me-2"></i> Tìm xe mới
                             </Link>
                         </div>

@@ -1,5 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { useAuth } from "./context/AuthContext"; // Import useAuth
 
 // Layout Components (Load immediately for LCP)
 import Navbar from "./Component/Navbar";
@@ -46,14 +47,17 @@ const Loading = () => (
 
 export default function App() {
   const location = useLocation();
+  const { user } = useAuth(); // Get user from auth context
   const { isPanelOpen } = useProductDetail();
-  const isDashboardPage = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/profile');
+  
+  // Hide Navbar/Footer only for admin users on dashboard pages
+  const isAdminOnDashboard = user?.role === 'admin' && location.pathname.startsWith('/dashboard');
 
   return (
     <>
       <div className={`app-container ${isPanelOpen ? 'app-container-shifted' : ''}`}>
         <ScrollToTop />
-        <Navbar />
+        {!isAdminOnDashboard && <Navbar />}
         <main style={{ minHeight: "80vh" }}>
           <Suspense fallback={<Loading />}>
             <Routes>
@@ -88,7 +92,7 @@ export default function App() {
             </Routes>
           </Suspense>
         </main>
-        {!isDashboardPage && <Footer />}
+        {!isAdminOnDashboard && <Footer />}
       </div>
       <ProductDetailPanel />
     </>
