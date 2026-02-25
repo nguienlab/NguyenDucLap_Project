@@ -27,7 +27,7 @@ export default function Login() {
             {/* Left Side - Image & Quote */}
             <div className="d-none d-lg-flex col-lg-6 position-relative align-items-center justify-content-center overflow-hidden">
                 <motion.img 
-                    src="/react-car-shop/images/cbr1000rrr.png" 
+                    src="/images/cbr1000rrr.png" 
                     alt="Login Background" 
                     className="position-absolute w-100 h-100"
                     style={{ objectFit: 'contain', backgroundColor: '#f8f9fa' }}
@@ -68,7 +68,7 @@ export default function Login() {
                 >
                     <div className="text-center mb-5">
                         <img 
-                            src="/react-car-shop/images/logo1.png" 
+                            src="/images/logo1.png" 
                             alt="Logo" 
                             style={{ 
                                 width: '100px', 

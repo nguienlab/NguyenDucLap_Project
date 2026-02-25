@@ -62,7 +62,7 @@ export default function Footer() {
               <div className="d-flex align-items-center mb-4">
                 <div className="p-1 rounded-circle border border-2 border-warning me-3">
                    <img 
-                      src="/react-car-shop/images/logo1.png" 
+                      src="/images/logo1.png" 
                       alt="Logo" 
                       style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover' }} 
                    />
@@ -165,7 +165,7 @@ export default function Footer() {
                     <div className="col-4" key={idx}>
                        <div style={{ width: '100%', paddingBottom: '100%', position: 'relative', overflow: 'hidden', borderRadius: '8px' }}>
                           <img 
-                             src={`/react-car-shop/images/${img}`} 
+                             src={`/images/${img}`} 
                              alt="Gallery"
                              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', background: '#222', transition: 'transform 0.3s' }}
                              onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}

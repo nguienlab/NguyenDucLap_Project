@@ -20,7 +20,7 @@ export default function About() {
       {/* 1. Hero Section - Parallax Style */}
       <section style={{ position: "relative", height: "80vh", overflow: "hidden" }}>
         <motion.img 
-          src="/react-car-shop/images/banner-bg1.png" 
+          src="/images/banner-bg1.png" 
           alt="About Hero"
           style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.5)" }}
           initial={{ scale: 1.2 }}
@@ -83,7 +83,7 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <img src="/react-car-shop/images/cus5.png" alt="Story" className="img-fluid rounded-5 shadow-lg" />
+              <img src="/images/cus5.png" alt="Story" className="img-fluid rounded-5 shadow-lg" />
               <div className="position-absolute bottom-0 start-0 bg-white p-4 rounded-4 shadow-lg m-4 d-none d-md-block" style={{ maxWidth: '250px' }}>
                  <p className="fst-italic m-0 text-dark">"Sự hài lòng của khách hàng là thước đo duy nhất cho thành công của chúng tôi."</p>
                  <small className="fw-bold text-warning d-block mt-2">- Founder</small>
@@ -132,7 +132,7 @@ export default function About() {
             >
               <div className="card border-0 shadow-lg rounded-4 overflow-hidden h-100 position-relative group-hover-effect">
                 <img 
-                  src={`/react-car-shop/images/${member.img}`} 
+                  src={`/images/${member.img}`} 
                   alt={member.name} 
                   className="card-img-top" 
                   style={{ height: '400px', objectFit: 'cover', transition: 'transform 0.5s' }}

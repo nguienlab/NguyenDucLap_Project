@@ -202,8 +202,8 @@ export default function Home() {
 
         <section className="split-section">
           <div className="split-media">
-            <motion.img src="/react-car-shop/images/sale1.png" alt="sale" className="split-img" initial={{ x: 30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
-            <motion.img src="/react-car-shop/images/sale2.png" alt="sale2" className="split-img" initial={{ x: -30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
+            <motion.img src="/images/sale1.png" alt="sale" className="split-img" initial={{ x: 30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
+            <motion.img src="/images/sale2.png" alt="sale2" className="split-img" initial={{ x: -30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
           </div>
 
           <div className="split-text">
@@ -219,8 +219,8 @@ export default function Home() {
 
         <section className="split-section reverse">
           <div className="split-media">
-            <motion.img src="/react-car-shop/images/cus1.png" alt="cus1" className="split-img" initial={{ x: -30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
-            <motion.img src="/react-car-shop/images/cus5.png" alt="cus5" className="split-img" initial={{ x: 30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
+            <motion.img src="/images/cus1.png" alt="cus1" className="split-img" initial={{ x: -30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
+            <motion.img src="/images/cus5.png" alt="cus5" className="split-img" initial={{ x: 30, opacity:0 }} whileInView={{ x:0, opacity:1 }} transition={{duration:0.6}} />
           </div>
 
           <div className="split-text">

@@ -4,7 +4,7 @@
     align-items: center;
     min-height: 80vh;
     padding: 2rem;
-    background-image: url("/react-car-shop/images/banner-bg.png");
+    background-image: url("/images/banner-bg.png");
 }
 
 .login-form-wrapper {

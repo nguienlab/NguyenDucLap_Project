@@ -81,7 +81,7 @@
 /* --- Creative redesign styles --- */
 .creative-about {
   /* Darkened orange banner for legible white text */
-  background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.25)), linear-gradient(rgba(255,153,0,0.45), rgba(255,110,0,0.35)), url('/react-car-shop/images/banner-bg.png');
+  background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.25)), linear-gradient(rgba(255,153,0,0.45), rgba(255,110,0,0.35)), url('/images/banner-bg.png');
   background-size: cover;
   background-position: center;
   background-blend-mode: overlay, overlay;

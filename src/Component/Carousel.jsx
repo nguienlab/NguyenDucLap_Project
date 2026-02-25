@@ -18,7 +18,7 @@ export default function CarouselHero() {
       <div className="carousel-inner rounded-4 shadow-sm">
         <div className="carousel-item active">
           <img
-            src="/react-car-shop/images/caroucel1.png"
+            src="/images/caroucel1.png"
             className="d-block w-100 carousel-img"
             alt="Sport Car"
           />
@@ -30,7 +30,7 @@ export default function CarouselHero() {
 
         <div className="carousel-item">
           <img
-            src="/react-car-shop/images/caroucel2.png"
+            src="/images/caroucel2.png"
             className="d-block w-100 carousel-img"
             alt="SUV"
           />
@@ -42,7 +42,7 @@ export default function CarouselHero() {
 
         <div className="carousel-item">
           <img
-            src="/react-car-shop/images/caroucel3.png"
+            src="/images/caroucel3.png"
             className="d-block w-100 carousel-img"
             alt="Sedan"
           />

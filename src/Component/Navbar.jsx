@@ -66,7 +66,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link className="navbar-brand d-flex align-items-center me-4" to="/">
             <motion.img
-              src="/react-car-shop/images/logo1.png"
+              src="/images/logo1.png"
               alt="logo"
               style={{
                 height: 45,

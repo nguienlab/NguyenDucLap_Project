@@ -1,6 +1,6 @@
 .home-wrapper {
   min-height: 80vh;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)), url('/react-car-shop/images/banner-bg.png');
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)), url('/images/banner-bg.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
